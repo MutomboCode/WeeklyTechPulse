@@ -764,7 +764,7 @@
       <div class="refresh-dot" title="Dados atualizados"></div>
       <div class="timestamp" id="pageTimestamp">📅 ...</div>
       <button class="compare-btn" onclick="openComparison()">
-        🔍 Comparar Repos AIOS
+        🔍 SynkraAI/aiox-core
       </button>
     </div>
   </div>
@@ -1352,7 +1352,7 @@
   <div class="comparison-modal">
 
     <div class="cmp-header">
-      <h2>🔍 Análise Comparativa — <span>Synkra AIOS</span></h2>
+      <h2>🔍 Análise Comparativa — <span>SynkraAI/aiox-core</span></h2>
       <button class="cmp-close" onclick="document.getElementById('cmpOverlay').classList.remove('open')">✕</button>
     </div>
 
@@ -1778,15 +1778,10 @@ function renderComparison(d, el) {
 
   el.innerHTML =
     '<div>' +
-      '<div class="cmp-section-title">Repositórios Analisados</div>' +
-      '<div class="cmp-repos">' +
-        '<div class="repo-hdr-card fork">' +
-          '<div class="repo-hdr-label">🔒 Fork Pessoal</div>' +
-          '<div class="repo-hdr-name"><a href="https://github.com/csrodrigos-create/synkra-aios" target="_blank">csrodrigos-create/synkra-aios</a> <span class="lock-icon">🔒</span></div>' +
-          '<div class="repo-hdr-desc">Snapshot pessoal — 2 commits, 01 mai 2026. Privado.</div>' +
-        '</div>' +
+      '<div class="cmp-section-title">Repositório Analisado</div>' +
+      '<div class="cmp-repos" style="grid-template-columns:1fr">' +
         '<div class="repo-hdr-card upstream">' +
-          '<div class="repo-hdr-label">✅ Upstream Oficial</div>' +
+          '<div class="repo-hdr-label">✅ Repositório Oficial</div>' +
           '<div class="repo-hdr-name"><a href="https://github.com/SynkraAI/aiox-core" target="_blank">SynkraAI/aiox-core</a></div>' +
           '<div class="repo-hdr-desc">'+_e(up.description||'Synkra AIOX Core Framework')+' · NPM: <code style="color:#34D399">aiox-core</code></div>' +
         '</div>' +
@@ -1795,29 +1790,23 @@ function renderComparison(d, el) {
     '<div>' +
       '<div class="cmp-section-title">Métricas em Tempo Real — '+ts.toLocaleString('pt-BR')+'</div>' +
       '<div class="metrics-grid">' +
-        '<div class="metric-card"><div class="metric-label">⭐ Stars</div><div class="metric-row"><span class="metric-val-a">0</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.stargazers_count.toLocaleString('pt-BR')+'</span></div><div class="metric-delta">+'+up.stargazers_count.toLocaleString('pt-BR')+'</div></div>' +
-        '<div class="metric-card"><div class="metric-label">🍴 Forks</div><div class="metric-row"><span class="metric-val-a">1</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.forks_count.toLocaleString('pt-BR')+'</span></div><div class="metric-delta">+'+(up.forks_count-1).toLocaleString('pt-BR')+'</div></div>' +
-        '<div class="metric-card"><div class="metric-label">📦 Últ. Release</div><div class="metric-row"><span class="metric-val-a">—</span><span class="metric-sep">→</span><span class="metric-val-b">'+(rel?_e(rel.tag_name):'—')+'</span></div><div class="metric-delta neutral">upstream</div></div>' +
-        '<div class="metric-card"><div class="metric-label">🐛 Issues Abertas</div><div class="metric-row"><span class="metric-val-a">0</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.open_issues_count+'</span></div><div class="metric-delta neutral">upstream</div></div>' +
-        '<div class="metric-card"><div class="metric-label">💾 Tamanho</div><div class="metric-row"><span class="metric-val-a">13.7 MB</span><span class="metric-sep">→</span><span class="metric-val-b">'+((up.size/1024).toFixed(1))+' MB</span></div><div class="metric-delta neutral">live</div></div>' +
-        '<div class="metric-card"><div class="metric-label">👁 Watchers</div><div class="metric-row"><span class="metric-val-a">0</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.watchers_count+'</span></div><div class="metric-delta">+'+up.watchers_count+'</div></div>' +
+        '<div class="metric-card"><div class="metric-label">⭐ Stars</div><div class="metric-row"><span class="metric-val-b">'+up.stargazers_count.toLocaleString('pt-BR')+'</span></div><div class="metric-delta">live</div></div>' +
+        '<div class="metric-card"><div class="metric-label">🍴 Forks</div><div class="metric-row"><span class="metric-val-b">'+up.forks_count.toLocaleString('pt-BR')+'</span></div><div class="metric-delta">live</div></div>' +
+        '<div class="metric-card"><div class="metric-label">📦 Últ. Release</div><div class="metric-row"><span class="metric-val-b">'+(rel?_e(rel.tag_name):'—')+'</span></div><div class="metric-delta neutral">latest</div></div>' +
+        '<div class="metric-card"><div class="metric-label">🐛 Issues Abertas</div><div class="metric-row"><span class="metric-val-b">'+up.open_issues_count+'</span></div><div class="metric-delta neutral">abertas</div></div>' +
+        '<div class="metric-card"><div class="metric-label">💾 Tamanho</div><div class="metric-row"><span class="metric-val-b">'+((up.size/1024).toFixed(1))+' MB</span></div><div class="metric-delta neutral">live</div></div>' +
+        '<div class="metric-card"><div class="metric-label">👁 Watchers</div><div class="metric-row"><span class="metric-val-b">'+up.watchers_count+'</span></div><div class="metric-delta">live</div></div>' +
         '<div class="metric-card"><div class="metric-label">🗣 Linguagem</div><div class="metric-row"><span class="metric-val-b" style="font-size:12px">'+_e(up.language||'JavaScript')+'</span></div><div class="metric-delta neutral">principal</div></div>' +
         '<div class="metric-card"><div class="metric-label">📅 Últ. Push</div><div class="metric-row"><span class="metric-val-b" style="font-size:11px">'+_fd(up.pushed_at)+'</span></div><div class="metric-delta">live</div></div>' +
       '</div>' +
     '</div>' +
     '<div>' +
-      '<div class="cmp-section-title">Últimos Commits — aiox-core (tempo real)</div>' +
+      '<div class="cmp-section-title">Últimos Commits — SynkraAI/aiox-core (tempo real)</div>' +
       '<div class="commits-list">'+(commitHtml||'<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:12px">Nenhum commit disponível</div>')+'</div>' +
     '</div>' +
     '<div>' +
       '<div class="cmp-section-title">Score de Saúde do Repositório</div>' +
-      '<div class="health-row">' +
-        '<div class="health-card fork">' +
-          '<div class="health-name">csrodrigos-create/synkra-aios</div>' +
-          '<div class="health-score">18<span style="font-size:16px;font-weight:400;opacity:0.5">/100</span></div>' +
-          '<div class="health-bar-wrap"><div class="health-bar" style="width:18%"></div></div>' +
-          '<div class="health-labels"><div class="health-lbl"><span>Atividade</span><span>2/30</span></div><div class="health-lbl"><span>Comunidade</span><span>0/20</span></div><div class="health-lbl"><span>Maturidade</span><span>3/20</span></div><div class="health-lbl"><span>Manutenção</span><span>5/20</span></div></div>' +
-        '</div>' +
+      '<div class="health-row" style="grid-template-columns:1fr">' +
         '<div class="health-card upstream">' +
           '<div class="health-name">SynkraAI/aiox-core</div>' +
           '<div class="health-score">'+score+'<span style="font-size:16px;font-weight:400;opacity:0.5">/100</span></div>' +
