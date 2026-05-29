@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Machine Learning — Últimas Atualizações</title>
+<style>
+  :root {
+    --aws-orange: #FF9900;
+    --aws-dark: #232F3E;
+    --aws-dark-alt: #1A2433;
+    --aws-blue: #0073BB;
+    --aws-light: #F8F9FA;
+    --aws-border: #E5E7EB;
+    --text-primary: #1A1A2E;
+    --text-secondary: #6B7280;
+    --badge-new: #16A34A;
+    --badge-updated: #2563EB;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.05);
+    --card-hover: 0 4px 20px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.08);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F0F2F5;
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--aws-dark);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .aws-logo {
+    width: 38px;
+    height: 38px;
+    background: var(--aws-orange);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--aws-dark);
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .header-titles h1 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+  }
+  .header-titles p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+  }
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .timestamp {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .refresh-dot {
+    width: 8px;
+    height: 8px;
+    background: #22C55E;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.25); }
+    50% { box-shadow: 0 0 0 6px rgba(34,197,94,0.1); }
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: linear-gradient(135deg, var(--aws-dark-alt) 0%, #2D3F55 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .stats-bar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 28px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+  }
+  .stat-pill strong {
+    color: var(--aws-orange);
+    font-weight: 700;
+  }
+  .stat-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.12);
+    align-self: stretch;
+  }
+
+  /* ── LAYOUT ── */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; padding: 16px; }
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    border: 1px solid var(--aws-border);
+  }
+  .section-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid var(--aws-border);
+    background: #FAFAFA;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .section-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+  .section-title h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--aws-dark);
+    letter-spacing: -0.1px;
+  }
+  .section-title span {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+  .section-link {
+    font-size: 11.5px;
+    color: var(--aws-blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .section-link:hover { background: #EFF6FF; }
+  .count-badge {
+    background: var(--aws-orange);
+    color: var(--aws-dark);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ── BLOG CARDS ── */
+  .blog-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  .blog-card {
+    border: 1px solid var(--aws-border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    background: #fff;
+  }
+  .blog-card:hover {
+    border-color: var(--aws-orange);
+    box-shadow: var(--card-hover);
+    transform: translateY(-1px);
+  }
+  .blog-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .blog-date {
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    background: var(--aws-light);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--aws-border);
+  }
+  .badge-new {
+    background: #DCFCE7;
+    color: var(--badge-new);
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border: 1px solid #BBF7D0;
+  }
+  .blog-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 5px;
+  }
+  .blog-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .blog-title a:hover { color: var(--aws-blue); }
+  .blog-authors {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .blog-authors svg { flex-shrink: 0; opacity: 0.6; }
+  .blog-summary {
+    font-size: 12px;
+    color: #4B5563;
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  .blog-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .cat-tag {
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #F3F4F6;
+    color: #374151;
+    border: 1px solid #E5E7EB;
+    line-height: 1.4;
+  }
+  .cat-tag.highlight {
+    background: #FFF7ED;
+    color: #92400E;
+    border-color: #FED7AA;
+  }
+
+  /* ── GITHUB CARDS ── */
+  .github-grid { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 640px) { .github-grid { grid-template-columns: 1fr; } }
+
+  .repo-card {
+    border: 1px solid var(--aws-border);
+    border-radius: var(--radius-sm);
+    padding: 13px 14px;
+    transition: all 0.2s ease;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .repo-card:hover {
+    border-color: var(--aws-orange);
+    box-shadow: var(--card-hover);
+    transform: translateY(-1px);
+  }
+  .repo-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .repo-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--aws-blue);
+    text-decoration: none;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .repo-name:hover { text-decoration: underline; }
+  .badge-updated {
+    background: #DBEAFE;
+    color: var(--badge-updated);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border: 1px solid #BFDBFE;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .repo-desc {
+    font-size: 11.5px;
+    color: #4B5563;
+    line-height: 1.45;
+    flex-grow: 1;
+  }
+  .repo-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .lang-dot {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .lang-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .repo-stars {
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .repo-updated {
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    margin-left: auto;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    max-width: 1400px;
+    margin: 0 auto 28px;
+    padding: 0 28px;
+  }
+  .footer-inner {
+    background: var(--aws-dark);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footer-text {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.45);
+  }
+  .footer-text strong { color: rgba(255,255,255,0.7); }
+  .footer-links {
+    display: flex;
+    gap: 14px;
+  }
+  .footer-links a {
+    font-size: 11.5px;
+    color: var(--aws-orange);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+  .footer-links a:hover { opacity: 1; }
+
+  /* ── WORKFLOW BADGE ── */
+  .workflow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,153,0,0.1);
+    border: 1px solid rgba(255,153,0,0.25);
+    color: var(--aws-orange);
+    font-size: 10.5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  /* ── COMPARE BUTTON ── */
+  .compare-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.4);
+  }
+  .compare-btn:hover {
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+    box-shadow: 0 4px 14px rgba(124,58,237,0.5);
+    transform: translateY(-1px);
+  }
+
+  /* ── COMPARISON OVERLAY ── */
+  .comparison-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 999;
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .comparison-overlay.open { display: flex; }
+
+  .comparison-modal {
+    background: #0F1117;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+
+  .cmp-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: #0F1117;
+    z-index: 10;
+    border-radius: 14px 14px 0 0;
+  }
+  .cmp-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cmp-header h2 span {
+    background: linear-gradient(135deg, #7C3AED, #06B6D4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cmp-close {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.6);
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .cmp-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+  .cmp-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* Repo header cards */
+  .cmp-repos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .repo-hdr-card {
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid;
+  }
+  .repo-hdr-card.fork {
+    background: rgba(99,102,241,0.08);
+    border-color: rgba(99,102,241,0.25);
+  }
+  .repo-hdr-card.upstream {
+    background: rgba(16,185,129,0.08);
+    border-color: rgba(16,185,129,0.25);
+  }
+  .repo-hdr-label {
+    font-size: 9.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+  .repo-hdr-card.fork .repo-hdr-label { color: #818CF8; }
+  .repo-hdr-card.upstream .repo-hdr-label { color: #34D399; }
+  .repo-hdr-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .repo-hdr-name a { color: inherit; text-decoration: none; }
+  .repo-hdr-name a:hover { text-decoration: underline; }
+  .lock-icon { font-size: 11px; opacity: 0.6; }
+  .repo-hdr-desc { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.45; }
+
+  /* Metrics grid */
+  .cmp-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 10px;
+  }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .metric-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .metric-label { font-size: 10px; color: rgba(255,255,255,0.4); }
+  .metric-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .metric-val-a { font-size: 14px; font-weight: 700; color: #818CF8; }
+  .metric-sep { font-size: 10px; color: rgba(255,255,255,0.2); }
+  .metric-val-b { font-size: 14px; font-weight: 700; color: #34D399; }
+  .metric-delta {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: rgba(16,185,129,0.15);
+    color: #34D399;
+  }
+  .metric-delta.neutral { background: rgba(156,163,175,0.15); color: #9CA3AF; }
+
+  /* Side-by-side comparison table */
+  .cmp-table { width: 100%; border-collapse: collapse; }
+  .cmp-table th {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: rgba(255,255,255,0.3);
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .cmp-table td {
+    font-size: 12px;
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: middle;
+  }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table .td-attr { color: rgba(255,255,255,0.45); font-size: 11px; }
+  .cmp-table .td-fork { color: #818CF8; }
+  .cmp-table .td-upstream { color: #34D399; }
+  .cmp-table .td-better {
+    font-weight: 700;
+    background: rgba(16,185,129,0.06);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  /* Commits list */
+  .commits-list { display: flex; flex-direction: column; gap: 6px; }
+  .commit-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 9px 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 7px;
+  }
+  .commit-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .commit-dot.fix { background: #EF4444; }
+  .commit-dot.feat { background: #10B981; }
+  .commit-dot.chore { background: #6B7280; }
+  .commit-dot.test { background: #F59E0B; }
+  .commit-dot.docs { background: #3B82F6; }
+  .commit-info { flex: 1; min-width: 0; }
+  .commit-msg { font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.4; }
+  .commit-meta { font-size: 10.5px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+  /* Health score */
+  .health-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .health-card {
+    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1px solid;
+  }
+  .health-card.fork { background: rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.2); }
+  .health-card.upstream { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.2); }
+  .health-name { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .health-score { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+  .health-card.fork .health-score { color: #818CF8; }
+  .health-card.upstream .health-score { color: #34D399; }
+  .health-bar-wrap { height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .health-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .health-card.fork .health-bar { background: linear-gradient(90deg, #6366F1, #8B5CF6); }
+  .health-card.upstream .health-bar { background: linear-gradient(90deg, #10B981, #06B6D4); }
+  .health-labels { display: flex; flex-direction: column; gap: 3px; }
+  .health-lbl { font-size: 10.5px; color: rgba(255,255,255,0.35); display: flex; justify-content: space-between; }
+  .health-lbl span:last-child { color: rgba(255,255,255,0.55); font-weight: 600; }
+
+  /* Timestamp badge */
+  .cmp-timestamp {
+    text-align: center;
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.2);
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  @media (max-width: 640px) {
+    .cmp-repos, .metrics-grid, .health-row { grid-template-columns: 1fr; }
+  }
+
+  /* ── SKELETON LOADING ── */
+  .skeleton {
+    background: linear-gradient(90deg, #F0F2F5 25%, #E5E7EB 50%, #F0F2F5 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 4px;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .sk-card { border:1px solid #E5E7EB; border-radius:6px; padding:14px 16px; display:flex; flex-direction:column; gap:9px; }
+  .sk-title { height:13px; width:75%; }
+  .sk-line  { height:11px; width:90%; }
+  .sk-sm    { height:10px; width:45%; }
+  .sk-repo  { border:1px solid #E5E7EB; border-radius:6px; padding:13px 14px; display:flex; flex-direction:column; gap:8px; }
+  .sk-repo-name { height:12px; width:60%; }
+  .sk-repo-desc { height:11px; width:85%; }
+  .sk-repo-foot { height:10px; width:40%; }
+
+  /* ── LOADING / ERROR STATES ── */
+  .cmp-loading {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 14px; padding: 56px 24px;
+    color: rgba(255,255,255,0.4); font-size: 13px;
+  }
+  .cmp-spinner {
+    width: 32px; height: 32px;
+    border: 3px solid rgba(124,58,237,0.2);
+    border-top-color: #7C3AED;
+    border-radius: 50%;
+    animation: cmp-spin 0.8s linear infinite;
+  }
+  @keyframes cmp-spin { to { transform: rotate(360deg); } }
+  .cmp-error {
+    text-align: center; padding: 36px; color: #EF4444;
+    font-size: 12.5px; line-height: 1.7;
+  }
+  .cmp-refresh-btn {
+    background: none; border: none;
+    color: #818CF8; cursor: pointer;
+    font-size: 10.5px; text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="aws-logo">AWS</div>
+      <div class="header-titles">
+        <h1>AWS Machine Learning — Últimas Atualizações</h1>
+        <p>Blog Posts &amp; Repositórios GitHub · Gerado pelo workflow aws-ml-updates-monitor</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="refresh-dot" title="Dados atualizados"></div>
+      <div class="timestamp" id="pageTimestamp">📅 ...</div>
+      <button class="compare-btn" onclick="openComparison()">
+        🔍 Comparar Repos AIOS
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-pill">
+      <span>📝 Blog posts coletados:</span>
+      <strong>10</strong>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-pill">
+      <span>🐙 Repositórios GitHub:</span>
+      <strong>15</strong>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-pill">
+      <span>🆕 Novos hoje:</span>
+      <strong>4</strong>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-pill">
+      <span>🔄 Repos atualizados hoje:</span>
+      <strong>15</strong>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-pill">
+      <span>Workflow:</span>
+      <span class="workflow-badge">⚡ aws-ml-updates-monitor v1.0</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN GRID ── -->
+<main class="main">
+
+  <!-- ── BLOG SECTION ── -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <span class="section-icon">📝</span>
+        <h2>Blog AWS Machine Learning</h2>
+        <span class="count-badge" id="blogCount">…</span>
+      </div>
+      <a href="https://aws.amazon.com/pt/blogs/machine-learning/" target="_blank" class="section-link">
+        Ver blog ↗
+      </a>
+    </div>
+
+    <div class="blog-list" id="blogList">
+      <div class="sk-card"><div class="skeleton sk-title"></div><div class="skeleton sk-line"></div><div class="skeleton sk-sm"></div></div>
+      <div class="sk-card"><div class="skeleton sk-title"></div><div class="skeleton sk-line"></div><div class="skeleton sk-sm"></div></div>
+      <div class="sk-card"><div class="skeleton sk-title"></div><div class="skeleton sk-line"></div><div class="skeleton sk-sm"></div></div>
+      <div class="sk-card"><div class="skeleton sk-title"></div><div class="skeleton sk-line"></div><div class="skeleton sk-sm"></div></div>
+      <!-- static fallback kept below, replaced by JS -->
+      <div style="display:none" id="blogFallback">
+      <!-- Post 1 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/manufacturing-intelligence-with-amazon-nova-multimodal-embeddings/" target="_blank">
+              Manufacturing intelligence with Amazon Nova Multimodal Embeddings
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">11 MAI 2026</span>
+            <span class="badge-new">NEW</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Adewale Akinfaderin, Matthew Lydon
+        </div>
+        <div class="blog-summary">
+          Sistema multimodal de recuperação para documentos de manufatura aeroespacial usando embeddings Amazon Nova no Amazon Bedrock e S3 Vectors.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon Nova</span>
+          <span class="cat-tag">Amazon Bedrock</span>
+          <span class="cat-tag">Manufacturing</span>
+          <span class="cat-tag">Advanced (300)</span>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/how-miro-uses-amazon-bedrock-to-boost-software-bug-routing-accuracy-and-improve-time-to-resolution-from-days-to-hours/" target="_blank">
+              How Miro uses Amazon Bedrock to boost software bug routing accuracy
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">11 MAI 2026</span>
+            <span class="badge-new">NEW</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Philipp Pavlov, Dmytro Romantsov, Evgeny Mironenko e outros
+        </div>
+        <div class="blog-summary">
+          Solução baseada em Amazon Bedrock que alcança 6× menos reatribuições de bugs e resolução 5× mais rápida — de dias para horas.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon Bedrock</span>
+          <span class="cat-tag">Amazon Nova</span>
+          <span class="cat-tag">Customer Solutions</span>
+        </div>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/amazon-quick-accelerating-the-path-from-enterprise-data-to-ai-powered-decisions/" target="_blank">
+              Amazon Quick: Accelerating the path from enterprise data to AI-powered decisions
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">11 MAI 2026</span>
+            <span class="badge-new">NEW</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Shekhar Kopuri, Amy Marvin, Emily Zhu e outros
+        </div>
+        <div class="blog-summary">
+          Cinco novas funcionalidades da Amazon Quick Suite que aceleram a entrega de insights alimentados por IA em escala empresarial.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon Quick Suite</span>
+          <span class="cat-tag">Announcements</span>
+          <span class="cat-tag">Business Intelligence</span>
+        </div>
+      </div>
+
+      <!-- Post 4 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/halliburton-enhances-seismic-workflow-creation-with-amazon-bedrock-and-generative-ai/" target="_blank">
+              Halliburton enhances seismic workflow creation with Amazon Bedrock
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">08 MAI 2026</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Yuan Tian, Arun Ramanathan, Baishali Chaudhury e outros
+        </div>
+        <div class="blog-summary">
+          PoC que converte linguagem natural em fluxos sísmicos executáveis, alcançando até 95% de aceleração no fluxo de trabalho de geofísica.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon Bedrock</span>
+          <span class="cat-tag">Amazon Nova</span>
+          <span class="cat-tag">Energy</span>
+          <span class="cat-tag">Amazon OpenSearch</span>
+        </div>
+      </div>
+
+      <!-- Post 5 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/secure-short-term-gpu-capacity-for-ml-workloads-with-ec2-capacity-blocks-for-ml-and-sagemaker-training-plans/" target="_blank">
+              Secure short-term GPU capacity for ML workloads with EC2 Capacity Blocks
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">07 MAI 2026</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Vanessa Ji, Alvaro Sanchez Martin, Yati Agarwal
+        </div>
+        <div class="blog-summary">
+          Guia completo para reserva de capacidade GPU de curto prazo com EC2 Capacity Blocks e planos de treinamento SageMaker.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon SageMaker AI</span>
+          <span class="cat-tag">Amazon EC2</span>
+          <span class="cat-tag">Best Practices</span>
+          <span class="cat-tag">Intermediate (200)</span>
+        </div>
+      </div>
+
+      <!-- Post 6 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/overcoming-reward-signal-challenges-verifiable-rewards-based-reinforcement-learning-with-grpo-on-sagemaker-ai/" target="_blank">
+              Overcoming reward signal challenges: Verifiable rewards-based RL with GRPO on SageMaker AI
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">07 MAI 2026</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Surya Kari, Amin Dashti, Giuseppe Zappia
+        </div>
+        <div class="blog-summary">
+          Implementação de RLVR + GRPO para melhoria de precisão em resolução de problemas matemáticos e raciocínio lógico em LLMs.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Generative AI</span>
+          <span class="cat-tag">Amazon SageMaker AI</span>
+          <span class="cat-tag">Technical How-to</span>
+        </div>
+      </div>
+
+      <!-- Post 7 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/agents-that-transact-introducing-amazon-bedrock-agentcore-payments-built-with-coinbase-and-stripe/" target="_blank">
+              Agents that transact: Introducing Amazon Bedrock AgentCore Payments (Coinbase &amp; Stripe)
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">07 MAI 2026</span>
+            <span class="badge-new">NEW</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Preethi C N
+        </div>
+        <div class="blog-summary">
+          Preview de AgentCore Payments: agentes de IA que realizam pagamentos autônomos via Coinbase (cripto) e Stripe (fiat).
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon Bedrock AgentCore</span>
+          <span class="cat-tag">Announcements</span>
+          <span class="cat-tag">Foundational (100)</span>
+        </div>
+      </div>
+
+      <!-- Post 8 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/cost-effective-deployment-of-vision-language-models-for-pet-behavior-detection-on-aws-inferentia2/" target="_blank">
+              Cost effective deployment of vision-language models for pet behavior detection on AWS Inferentia2
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">06 MAI 2026</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Ray Wang, Howard Su, Chen-Hsin Ding
+        </div>
+        <div class="blog-summary">
+          Detecção de comportamento animal com modelos vision-language em EC2 Inf2 — alta precisão com redução significativa de custos operacionais.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">AWS Inferentia</span>
+          <span class="cat-tag">Artificial Intelligence</span>
+          <span class="cat-tag">Customer Solutions</span>
+        </div>
+      </div>
+
+      <!-- Post 9 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/how-hapag-lloyd-uses-amazon-bedrock-to-transform-customer-feedback-into-actionable-insights/" target="_blank">
+              How Hapag-Lloyd uses Amazon Bedrock to transform customer feedback into actionable insights
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">05 MAI 2026</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Aamna Najmi, Anna Rysicka, Grzegorz Kaczor
+        </div>
+        <div class="blog-summary">
+          Análise de feedback de clientes da logística global usando Amazon Bedrock com LangChain e LangGraph para extrair insights acionáveis em escala.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Amazon Bedrock</span>
+          <span class="cat-tag">Bedrock Guardrails</span>
+          <span class="cat-tag">Customer Solutions</span>
+        </div>
+      </div>
+
+      <!-- Post 10 -->
+      <div class="blog-card">
+        <div class="blog-card-top">
+          <div class="blog-title">
+            <a href="https://aws.amazon.com/blogs/machine-learning/aws-launches-frontier-agents-for-security-testing-and-cloud-operations/" target="_blank">
+              AWS launches frontier agents for security testing and cloud operations
+            </a>
+          </div>
+          <div class="blog-card-meta">
+            <span class="blog-date">31 MAR 2026</span>
+          </div>
+        </div>
+        <div class="blog-authors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Swami Sivasubramanian
+        </div>
+        <div class="blog-summary">
+          Lançamento do AWS Security Agent e AWS DevOps Agent — agentes autônomos que reduzem testes de penetração de semanas para horas.
+        </div>
+        <div class="blog-categories">
+          <span class="cat-tag highlight">Announcements</span>
+          <span class="cat-tag">Security &amp; Governance</span>
+          <span class="cat-tag">Thought Leadership</span>
+        </div>
+      </div>
+
+      </div><!-- /blogFallback -->
+    </div><!-- /blog-list -->
+  </section>
+
+  <!-- ── GITHUB SECTION ── -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <span class="section-icon">🐙</span>
+        <h2>Repositórios AWS — GitHub</h2>
+        <span class="count-badge" id="reposCount">…</span>
+      </div>
+      <a href="https://github.com/orgs/aws/repositories?type=all" target="_blank" class="section-link">
+        Ver todos ↗
+      </a>
+    </div>
+
+    <div class="github-grid" id="reposGrid">
+      <div class="sk-repo"><div class="skeleton sk-repo-name"></div><div class="skeleton sk-repo-desc"></div><div class="skeleton sk-repo-foot"></div></div>
+      <div class="sk-repo"><div class="skeleton sk-repo-name"></div><div class="skeleton sk-repo-desc"></div><div class="skeleton sk-repo-foot"></div></div>
+      <div class="sk-repo"><div class="skeleton sk-repo-name"></div><div class="skeleton sk-repo-desc"></div><div class="skeleton sk-repo-foot"></div></div>
+      <div class="sk-repo"><div class="skeleton sk-repo-name"></div><div class="skeleton sk-repo-desc"></div><div class="skeleton sk-repo-foot"></div></div>
+      <div style="display:none" id="reposFallback">
+      <!-- Repo 1 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/agentcore-cli" target="_blank" class="repo-name">agentcore-cli</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">The new terminal experience for AgentCore!</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#2B7489"></span>TypeScript
+          </span>
+          <span class="repo-stars">⭐ 124</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 2 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-ofi-nccl" target="_blank" class="repo-name">aws-ofi-nccl</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Plugin para usar libfabric como network provider em aplicações NCCL no EC2.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#F34B7D"></span>C++
+          </span>
+          <span class="repo-stars">⭐ 212</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 3 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-sdk-js-v3" target="_blank" class="repo-name">aws-sdk-js-v3</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Modularized AWS SDK for JavaScript.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#2B7489"></span>TypeScript
+          </span>
+          <span class="repo-stars">⭐ 3.6k</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 4 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/jsii" target="_blank" class="repo-name">jsii</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Code in any language naturally interact with JavaScript classes.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#2B7489"></span>TypeScript
+          </span>
+          <span class="repo-stars">⭐ 2.9k</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 5 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-sdk-java-v2" target="_blank" class="repo-name">aws-sdk-java-v2</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">The official AWS SDK for Java — Version 2.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#B07219"></span>Java
+          </span>
+          <span class="repo-stars">⭐ 2.6k</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 6 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/s2n-quic" target="_blank" class="repo-name">s2n-quic</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">An implementation of the IETF QUIC protocol.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#DEA584"></span>Rust
+          </span>
+          <span class="repo-stars">⭐ 1.3k</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 7 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/deep-learning-containers" target="_blank" class="repo-name">deep-learning-containers</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">One stop shop for running AI/ML on AWS.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#3572A5"></span>Python
+          </span>
+          <span class="repo-stars">⭐ 1.2k</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 8 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-lc-rs" target="_blank" class="repo-name">aws-lc-rs</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Cryptographic library using AWS-LC, API-compatible com biblioteca Rust popular.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#DEA584"></span>Rust
+          </span>
+          <span class="repo-stars">⭐ 592</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 9 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/secrets-store-csi-driver-provider-aws" target="_blank" class="repo-name">secrets-store-csi-driver</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Fetch secrets from AWS Secrets Manager e Parameter Store montados em volumes.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#00ADD8"></span>Go
+          </span>
+          <span class="repo-stars">⭐ 584</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 10 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/smithy-go" target="_blank" class="repo-name">smithy-go</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Smithy code generators for Go (in development).</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#B07219"></span>Java
+          </span>
+          <span class="repo-stars">⭐ 245</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 11 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/sagemaker-xgboost-container" target="_blank" class="repo-name">sagemaker-xgboost-container</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Container Docker XGBoost para scripts customizados no SageMaker.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#3572A5"></span>Python
+          </span>
+          <span class="repo-stars">⭐ 144</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 12 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-durable-execution-sdk-js" target="_blank" class="repo-name">aws-durable-execution-sdk-js</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Lambda durable functions SDK, Testing SDK and fully functional examples.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#2B7489"></span>TypeScript
+          </span>
+          <span class="repo-stars">⭐ 79</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 13 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-advanced-python-wrapper" target="_blank" class="repo-name">aws-advanced-python-wrapper</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">Driver Python que estende funcionalidade de driver database existente.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#3572A5"></span>Python
+          </span>
+          <span class="repo-stars">⭐ 92</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 14 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/aws-database-encryption-sdk-dynamodb" target="_blank" class="repo-name">aws-database-encryption-sdk-dynamodb</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">AWS Database Encryption SDK for DynamoDB.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#DEA584"></span>Rust
+          </span>
+          <span class="repo-stars">⭐ 37</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      <!-- Repo 15 -->
+      <div class="repo-card">
+        <div class="repo-header">
+          <a href="https://github.com/aws/simplify-ota-script" target="_blank" class="repo-name">simplify-ota-script</a>
+          <span class="badge-updated">UPDATED</span>
+        </div>
+        <div class="repo-desc">OTA script simplification utility.</div>
+        <div class="repo-footer">
+          <span class="lang-dot">
+            <span class="lang-color" style="background:#3572A5"></span>Python
+          </span>
+          <span class="repo-stars">⭐ 1</span>
+          <span class="repo-updated">11 mai</span>
+        </div>
+      </div>
+
+      </div><!-- /reposFallback -->
+    </div><!-- /github-grid -->
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-text">
+      Gerado em <strong>11 maio 2026</strong> pelo workflow
+      <strong>aws-ml-updates-monitor v1.0</strong> · AIOX Framework ·
+      Dados coletados de fontes públicas AWS
+    </div>
+    <div class="footer-links">
+      <a href="https://aws.amazon.com/pt/blogs/machine-learning/" target="_blank">Blog AWS ML ↗</a>
+      <a href="https://github.com/orgs/aws/repositories" target="_blank">GitHub AWS ↗</a>
+      <a href="https://aws.amazon.com/bedrock/" target="_blank">Amazon Bedrock ↗</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ── COMPARISON MODAL ── -->
+<div id="cmpOverlay" class="comparison-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="comparison-modal">
+
+    <div class="cmp-header">
+      <h2>🔍 Análise Comparativa — <span>Synkra AIOS</span></h2>
+      <button class="cmp-close" onclick="document.getElementById('cmpOverlay').classList.remove('open')">✕</button>
+    </div>
+
+    <div class="cmp-body" id="cmpBody">
+      <div class="cmp-loading">
+        <div class="cmp-spinner"></div>
+        <span>Buscando dados do GitHub…</span>
+      </div>
+
+      <!-- placeholder: filled by JS -->
+      <div style="display:none">
+        <div>
+
+      <!-- Key metrics -->
+      <div>
+        <div class="cmp-section-title">Métricas Principais</div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">⭐ Stars</div>
+            <div class="metric-row">
+              <span class="metric-val-a">0</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">2.873</span>
+            </div>
+            <div class="metric-delta">+2.873</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">🍴 Forks</div>
+            <div class="metric-row">
+              <span class="metric-val-a">1</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">906</span>
+            </div>
+            <div class="metric-delta">+905</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">📦 Releases</div>
+            <div class="metric-row">
+              <span class="metric-val-a">0</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">43</span>
+            </div>
+            <div class="metric-delta">+43</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">📝 Commits</div>
+            <div class="metric-row">
+              <span class="metric-val-a">2</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">736+</span>
+            </div>
+            <div class="metric-delta">+734</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">💾 Tamanho</div>
+            <div class="metric-row">
+              <span class="metric-val-a">13.7 MB</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">35.6 MB</span>
+            </div>
+            <div class="metric-delta neutral">+21.9 MB</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">🐛 Issues Abertas</div>
+            <div class="metric-row">
+              <span class="metric-val-a">0</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">4</span>
+            </div>
+            <div class="metric-delta neutral">upstream</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">👥 Watchers</div>
+            <div class="metric-row">
+              <span class="metric-val-a">0</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b">61</span>
+            </div>
+            <div class="metric-delta">+61</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">📅 Último Commit</div>
+            <div class="metric-row">
+              <span class="metric-val-a" style="font-size:11px">01 mai</span>
+              <span class="metric-sep">→</span>
+              <span class="metric-val-b" style="font-size:11px">14 mai</span>
+            </div>
+            <div class="metric-delta">+13 dias</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison table -->
+      <div>
+        <div class="cmp-section-title">Comparação Detalhada</div>
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>Atributo</th>
+              <th style="color:#818CF8">synkra-aios (fork)</th>
+              <th style="color:#34D399">aiox-core (upstream)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-attr">Visibilidade</td>
+              <td class="td-fork">🔒 Privado</td>
+              <td class="td-upstream td-better">🌍 Público</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Versão</td>
+              <td class="td-fork">v4.0 (implícito)</td>
+              <td class="td-upstream td-better">v5.2.2 (latest)</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Pacote NPM</td>
+              <td class="td-fork">— não publicado</td>
+              <td class="td-upstream td-better"><code style="color:#34D399">npm i -g aiox-core</code></td>
+            </tr>
+            <tr>
+              <td class="td-attr">Mantenedor</td>
+              <td class="td-fork">brainiatz (Rodrigo)</td>
+              <td class="td-upstream">rafaelscosta (Rafael Costa)</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Organização</td>
+              <td class="td-fork">Pessoal (csrodrigos-create)</td>
+              <td class="td-upstream td-better">SynkraAI (org oficial)</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Assinatura GPG</td>
+              <td class="td-fork">Não</td>
+              <td class="td-upstream td-better">✅ Todos os commits assinados</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Dias ativo</td>
+              <td class="td-fork">~0 (1 dia)</td>
+              <td class="td-upstream td-better">157 dias (desde dez/2025)</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Agentes</td>
+              <td class="td-fork">100+ (exportados)</td>
+              <td class="td-upstream td-better">12 especializados + ADE</td>
+            </tr>
+            <tr>
+              <td class="td-attr">Licença</td>
+              <td class="td-fork">Nenhuma</td>
+              <td class="td-upstream">Customizada</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent commits (aiox-core) -->
+      <div>
+        <div class="cmp-section-title">Últimas Atualizações — aiox-core (mai 2026)</div>
+        <div class="commits-list">
+          <div class="commit-item">
+            <div class="commit-dot test"></div>
+            <div class="commit-info">
+              <div class="commit-msg">test: tolerate Windows timing jitter (<a href="https://github.com/SynkraAI/aiox-core/pull/736" target="_blank" style="color:#818CF8">#736</a>)</div>
+              <div class="commit-meta">rafaelscosta · 14 mai 2026</div>
+            </div>
+          </div>
+          <div class="commit-item">
+            <div class="commit-dot fix"></div>
+            <div class="commit-info">
+              <div class="commit-msg">fix: avoid Windows npm spawn failure in Pro install (<a href="https://github.com/SynkraAI/aiox-core/pull/735" target="_blank" style="color:#818CF8">#735</a>)</div>
+              <div class="commit-meta">rafaelscosta · 14 mai 2026</div>
+            </div>
+          </div>
+          <div class="commit-item">
+            <div class="commit-dot fix"></div>
+            <div class="commit-info">
+              <div class="commit-msg">fix: allow Pro greenfield validation without package manifest</div>
+              <div class="commit-meta">rafaelscosta · 13 mai 2026 — trata node_modules criado pelo Pro como válido em greenfield sem package.json</div>
+            </div>
+          </div>
+          <div class="commit-item">
+            <div class="commit-dot fix"></div>
+            <div class="commit-info">
+              <div class="commit-msg">fix: add legacy aiox-core npm wrapper — @aiox-squads/core; corrige status de publicação legado</div>
+              <div class="commit-meta">rafaelscosta · 13 mai 2026</div>
+            </div>
+          </div>
+          <div class="commit-item">
+            <div class="commit-dot chore"></div>
+            <div class="commit-info">
+              <div class="commit-msg">chore: bump core para Pro installer release v5.2.2 [Story PRO-13.5]</div>
+              <div class="commit-meta">rafaelscosta · 12 mai 2026 · 🏷️ Release v5.2.2</div>
+            </div>
+          </div>
+          <div class="commit-item">
+            <div class="commit-dot fix"></div>
+            <div class="commit-info">
+              <div class="commit-msg">fix: resolve registry intel cold start and ids dep (<a href="https://github.com/SynkraAI/aiox-core/pull/724" target="_blank" style="color:#818CF8">#724</a>)</div>
+              <div class="commit-meta">rafaelscosta · 10 mai 2026</div>
+            </div>
+          </div>
+          <div class="commit-item">
+            <div class="commit-dot feat"></div>
+            <div class="commit-info">
+              <div class="commit-msg">feat: semantic handshake gate [Story 483.1] + agent immortality foundation [Story 482.1] — v5.2.0</div>
+              <div class="commit-meta">rafaelscosta · 09 mai 2026 · 🏷️ Release v5.2.0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Health scores -->
+      <div>
+        <div class="cmp-section-title">Score de Saúde do Repositório</div>
+        <div class="health-row">
+          <div class="health-card fork">
+            <div class="health-name">csrodrigos-create/synkra-aios</div>
+            <div class="health-score">18<span style="font-size:16px;font-weight:400;opacity:0.5">/100</span></div>
+            <div class="health-bar-wrap"><div class="health-bar" style="width:18%"></div></div>
+            <div class="health-labels">
+              <div class="health-lbl"><span>Atividade</span><span>⭐ 2/30</span></div>
+              <div class="health-lbl"><span>Comunidade</span><span>0/20</span></div>
+              <div class="health-lbl"><span>Maturidade</span><span>3/20</span></div>
+              <div class="health-lbl"><span>Manutenção</span><span>5/20</span></div>
+              <div class="health-lbl"><span>Docs & Releases</span><span>8/10</span></div>
+            </div>
+          </div>
+          <div class="health-card upstream">
+            <div class="health-name">SynkraAI/aiox-core</div>
+            <div class="health-score">91<span style="font-size:16px;font-weight:400;opacity:0.5">/100</span></div>
+            <div class="health-bar-wrap"><div class="health-bar" style="width:91%"></div></div>
+            <div class="health-labels">
+              <div class="health-lbl"><span>Atividade</span><span>28/30</span></div>
+              <div class="health-lbl"><span>Comunidade</span><span>19/20 ⭐ 2.873</span></div>
+              <div class="health-lbl"><span>Maturidade</span><span>18/20 · 43 releases</span></div>
+              <div class="health-lbl"><span>Manutenção</span><span>17/20 · ~4 commits/dia</span></div>
+              <div class="health-lbl"><span>Docs & Releases</span><span>9/10</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmp-timestamp">
+        Dados coletados em 15 mai 2026 · API GitHub · Análise por Atlas (AIOS Analyst)
+      </div>
+
+    </div><!-- /cmp-body -->
+  </div><!-- /comparison-modal -->
+</div><!-- /comparison-overlay -->
+
+<script>
+(function() {
+  var d = new Date();
+  var m = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  var ts = d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear() + ' · ' +
+    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  var el = document.getElementById('pageTimestamp');
+  if (el) el.textContent = '📅 ' + ts;
+})();
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') document.getElementById('cmpOverlay').classList.remove('open');
+});
+
+/* ── PAGE DATA LOADER ── */
+var MONTHS_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+var MONTHS_PT_U = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+
+function _eh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function _blogDate(dateStr) {
+  try {
+    var d = new Date(dateStr);
+    return d.getDate() + ' ' + MONTHS_PT_U[d.getMonth()] + ' ' + d.getFullYear();
+  } catch(_){ return ''; }
+}
+
+function _isNew(dateStr) {
+  try { return (Date.now() - new Date(dateStr)) < 7*86400000; } catch(_){ return false; }
+}
+
+function _timeSince(dateStr) {
+  try {
+    var diff = Date.now() - new Date(dateStr);
+    var h = Math.floor(diff/3600000);
+    if (h < 24) return h + 'h';
+    var d = Math.floor(h/24);
+    if (d < 30) return d + 'd';
+    var dt = new Date(dateStr);
+    return dt.getDate() + ' ' + MONTHS_PT[dt.getMonth()];
+  } catch(_){ return '—'; }
+}
+
+function _fmtStars(n) {
+  return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n||0);
+}
+
+function renderBlogPosts(posts) {
+  if (!posts || !posts.length) return '<div style="padding:20px;color:#6B7280;font-size:13px;text-align:center">⚠️ Nenhum post disponível. Tente recarregar.</div>';
+  return posts.map(function(p) {
+    var newBadge = _isNew(p.pubDate) ? '<span class="badge-new">NEW</span>' : '';
+    var cats = (p.categories||[]).map(function(c,i){ return '<span class="cat-tag'+(i===0?' highlight':'')+'">'+_eh(c)+'</span>'; }).join('');
+    var authorBlock = p.author ? '<div class="blog-authors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+_eh(p.author)+'</div>' : '';
+    var summaryBlock = p.summary ? '<div class="blog-summary">'+_eh(p.summary.slice(0,200))+(p.summary.length>200?'…':'')+'</div>' : '';
+    return '<div class="blog-card"><div class="blog-card-top"><div class="blog-title"><a href="'+_eh(p.link)+'" target="_blank">'+_eh(p.title)+'</a></div><div class="blog-card-meta"><span class="blog-date">'+_blogDate(p.pubDate)+'</span>'+newBadge+'</div></div>'+authorBlock+summaryBlock+(cats?'<div class="blog-categories">'+cats+'</div>':'')+'</div>';
+  }).join('');
+}
+
+function renderRepos(repos) {
+  if (!repos || !repos.length) return '<div style="padding:20px;color:#6B7280;font-size:13px;text-align:center;grid-column:1/-1">⚠️ Nenhum repositório disponível.</div>';
+  return repos.map(function(r) {
+    var lang = r.language ? '<span class="lang-dot"><span class="lang-color" style="background:'+_eh(r.lang_color||'#8B949E')+'"></span>'+_eh(r.language)+'</span>' : '';
+    var stars = r.stargazers_count ? '<span class="repo-stars">⭐ '+_fmtStars(r.stargazers_count)+'</span>' : '';
+    return '<div class="repo-card"><div class="repo-header"><a href="'+_eh(r.html_url)+'" target="_blank" class="repo-name">'+_eh(r.name)+'</a><span class="badge-updated">UPDATED</span></div>'+(r.description?'<div class="repo-desc">'+_eh(r.description)+'</div>':'')+'<div class="repo-footer">'+lang+stars+'<span class="repo-updated">'+_timeSince(r.pushed_at)+'</span></div></div>';
+  }).join('');
+}
+
+function loadPageData() {
+  fetch('/api/data')
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(data) {
+      var blogList = document.getElementById('blogList');
+      var reposGrid = document.getElementById('reposGrid');
+      var blogCount = document.getElementById('blogCount');
+      var reposCount = document.getElementById('reposCount');
+
+      if (blogList) blogList.innerHTML = renderBlogPosts(data.posts);
+      if (reposGrid) reposGrid.innerHTML = renderRepos(data.repos);
+      if (blogCount) blogCount.textContent = (data.posts||[]).length;
+      if (reposCount) reposCount.textContent = (data.repos||[]).length;
+
+      // Update stats bar
+      var pills = document.querySelectorAll('.stat-pill strong');
+      if (pills[0]) pills[0].textContent = (data.posts||[]).length;
+      if (pills[1]) pills[1].textContent = (data.repos||[]).length;
+      var newCount = (data.posts||[]).filter(function(p){ return _isNew(p.pubDate); }).length;
+      if (pills[2]) pills[2].textContent = newCount;
+      if (pills[3]) pills[3].textContent = (data.repos||[]).length;
+
+      // Update footer date
+      if (data.fetchedAt) {
+        var fd = new Date(data.fetchedAt);
+        var fds = fd.getDate() + ' ' + MONTHS_PT[fd.getMonth()] + ' ' + fd.getFullYear();
+        var ftEl = document.querySelector('.footer-text strong');
+        if (ftEl) ftEl.textContent = fds;
+      }
+    })
+    .catch(function(err) {
+      console.warn('api/data failed:', err.message);
+      // Show fallback static content
+      var bf = document.getElementById('blogFallback');
+      var rf = document.getElementById('reposFallback');
+      var bl = document.getElementById('blogList');
+      var rg = document.getElementById('reposGrid');
+      if (bf && bl) { bl.innerHTML = ''; Array.from(bf.children).forEach(function(n){ bl.appendChild(n.cloneNode(true)); }); }
+      if (rf && rg) { rg.innerHTML = ''; Array.from(rf.children).forEach(function(n){ rg.appendChild(n.cloneNode(true)); }); }
+      var bc = document.getElementById('blogCount'); if (bc) bc.textContent = '10';
+      var rc = document.getElementById('reposCount'); if (rc) rc.textContent = '15';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', loadPageData);
+
+/* ── COMPARISON MODAL ── */
+var _cmpCache = null;
+
+function openComparison() {
+  document.getElementById('cmpOverlay').classList.add('open');
+  var body = document.getElementById('cmpBody');
+  if (_cmpCache) { renderComparison(_cmpCache, body); return; }
+  body.innerHTML = '<div class="cmp-loading"><div class="cmp-spinner"></div><span>Buscando dados do GitHub…</span></div>';
+  Promise.all([
+    fetch('https://api.github.com/repos/SynkraAI/aiox-core').then(function(r){return r.json();}),
+    fetch('https://api.github.com/repos/SynkraAI/aiox-core/commits?per_page=7').then(function(r){return r.json();}),
+    fetch('https://api.github.com/repos/SynkraAI/aiox-core/releases?per_page=1').then(function(r){return r.json();})
+  ]).then(function(results) {
+    _cmpCache = { up: results[0], commits: results[1], releases: results[2], ts: new Date() };
+    renderComparison(_cmpCache, body);
+  }).catch(function(err) {
+    body.innerHTML = '<div class="cmp-error">⚠️ Erro ao buscar dados: ' + err.message +
+      '<br><small>GitHub API tem limite de 60 req/h sem auth. Aguarde e tente novamente.</small>' +
+      '<br><br><button class="cmp-refresh-btn" onclick="_cmpCache=null;openComparison()">↻ Tentar novamente</button></div>';
+  });
+}
+
+function _fd(iso) {
+  if (!iso) return '—';
+  var d = new Date(iso);
+  var m = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function _ct(msg) {
+  if (/^fix[:(]/.test(msg)) return 'fix';
+  if (/^feat[:(]/.test(msg)) return 'feat';
+  if (/^test[:(]/.test(msg)) return 'test';
+  if (/^docs[:(]/.test(msg)) return 'docs';
+  return 'chore';
+}
+
+function _score(up) {
+  var s = Math.min(30, Math.floor(up.stargazers_count / 100));
+  var f = Math.min(20, Math.floor(up.forks_count / 50));
+  var days = (Date.now() - new Date(up.pushed_at)) / 86400000;
+  var a = Math.max(0, Math.round(25 - days * 5));
+  var i = Math.max(0, 10 - Math.max(0, up.open_issues_count - 5));
+  var sz = up.size > 20000 ? 10 : 5;
+  return Math.min(100, s + f + a + i + sz);
+}
+
+function _e(s) { return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderComparison(d, el) {
+  var up = d.up, commits = d.commits, releases = d.releases, ts = d.ts;
+  var rel = Array.isArray(releases) && releases.length ? releases[0] : null;
+  var score = _score(up);
+
+  var commitHtml = (Array.isArray(commits) ? commits : []).slice(0,7).map(function(c) {
+    var msg = c.commit.message.split('\n')[0];
+    var type = _ct(msg);
+    var pr = msg.match(/\(#(\d+)\)/);
+    var prLink = pr ? msg.replace('(#'+pr[1]+')', '(<a href="https://github.com/SynkraAI/aiox-core/pull/'+pr[1]+'" target="_blank" style="color:#818CF8">#'+pr[1]+'</a>)') : _e(msg);
+    return '<div class="commit-item"><div class="commit-dot '+type+'"></div><div class="commit-info"><div class="commit-msg">'+prLink+'</div><div class="commit-meta">'+_e(c.commit.author.name)+' · '+_fd(c.commit.committer.date)+' · <code>'+c.sha.slice(0,7)+'</code></div></div></div>';
+  }).join('');
+
+  el.innerHTML =
+    '<div>' +
+      '<div class="cmp-section-title">Repositórios Analisados</div>' +
+      '<div class="cmp-repos">' +
+        '<div class="repo-hdr-card fork">' +
+          '<div class="repo-hdr-label">🔒 Fork Pessoal</div>' +
+          '<div class="repo-hdr-name"><a href="https://github.com/csrodrigos-create/synkra-aios" target="_blank">csrodrigos-create/synkra-aios</a> <span class="lock-icon">🔒</span></div>' +
+          '<div class="repo-hdr-desc">Snapshot pessoal — 2 commits, 01 mai 2026. Privado.</div>' +
+        '</div>' +
+        '<div class="repo-hdr-card upstream">' +
+          '<div class="repo-hdr-label">✅ Upstream Oficial</div>' +
+          '<div class="repo-hdr-name"><a href="https://github.com/SynkraAI/aiox-core" target="_blank">SynkraAI/aiox-core</a></div>' +
+          '<div class="repo-hdr-desc">'+_e(up.description||'Synkra AIOX Core Framework')+' · NPM: <code style="color:#34D399">aiox-core</code></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div>' +
+      '<div class="cmp-section-title">Métricas em Tempo Real — '+ts.toLocaleString('pt-BR')+'</div>' +
+      '<div class="metrics-grid">' +
+        '<div class="metric-card"><div class="metric-label">⭐ Stars</div><div class="metric-row"><span class="metric-val-a">0</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.stargazers_count.toLocaleString('pt-BR')+'</span></div><div class="metric-delta">+'+up.stargazers_count.toLocaleString('pt-BR')+'</div></div>' +
+        '<div class="metric-card"><div class="metric-label">🍴 Forks</div><div class="metric-row"><span class="metric-val-a">1</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.forks_count.toLocaleString('pt-BR')+'</span></div><div class="metric-delta">+'+(up.forks_count-1).toLocaleString('pt-BR')+'</div></div>' +
+        '<div class="metric-card"><div class="metric-label">📦 Últ. Release</div><div class="metric-row"><span class="metric-val-a">—</span><span class="metric-sep">→</span><span class="metric-val-b">'+(rel?_e(rel.tag_name):'—')+'</span></div><div class="metric-delta neutral">upstream</div></div>' +
+        '<div class="metric-card"><div class="metric-label">🐛 Issues Abertas</div><div class="metric-row"><span class="metric-val-a">0</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.open_issues_count+'</span></div><div class="metric-delta neutral">upstream</div></div>' +
+        '<div class="metric-card"><div class="metric-label">💾 Tamanho</div><div class="metric-row"><span class="metric-val-a">13.7 MB</span><span class="metric-sep">→</span><span class="metric-val-b">'+((up.size/1024).toFixed(1))+' MB</span></div><div class="metric-delta neutral">live</div></div>' +
+        '<div class="metric-card"><div class="metric-label">👁 Watchers</div><div class="metric-row"><span class="metric-val-a">0</span><span class="metric-sep">→</span><span class="metric-val-b">'+up.watchers_count+'</span></div><div class="metric-delta">+'+up.watchers_count+'</div></div>' +
+        '<div class="metric-card"><div class="metric-label">🗣 Linguagem</div><div class="metric-row"><span class="metric-val-b" style="font-size:12px">'+_e(up.language||'JavaScript')+'</span></div><div class="metric-delta neutral">principal</div></div>' +
+        '<div class="metric-card"><div class="metric-label">📅 Últ. Push</div><div class="metric-row"><span class="metric-val-b" style="font-size:11px">'+_fd(up.pushed_at)+'</span></div><div class="metric-delta">live</div></div>' +
+      '</div>' +
+    '</div>' +
+    '<div>' +
+      '<div class="cmp-section-title">Últimos Commits — aiox-core (tempo real)</div>' +
+      '<div class="commits-list">'+(commitHtml||'<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:12px">Nenhum commit disponível</div>')+'</div>' +
+    '</div>' +
+    '<div>' +
+      '<div class="cmp-section-title">Score de Saúde do Repositório</div>' +
+      '<div class="health-row">' +
+        '<div class="health-card fork">' +
+          '<div class="health-name">csrodrigos-create/synkra-aios</div>' +
+          '<div class="health-score">18<span style="font-size:16px;font-weight:400;opacity:0.5">/100</span></div>' +
+          '<div class="health-bar-wrap"><div class="health-bar" style="width:18%"></div></div>' +
+          '<div class="health-labels"><div class="health-lbl"><span>Atividade</span><span>2/30</span></div><div class="health-lbl"><span>Comunidade</span><span>0/20</span></div><div class="health-lbl"><span>Maturidade</span><span>3/20</span></div><div class="health-lbl"><span>Manutenção</span><span>5/20</span></div></div>' +
+        '</div>' +
+        '<div class="health-card upstream">' +
+          '<div class="health-name">SynkraAI/aiox-core</div>' +
+          '<div class="health-score">'+score+'<span style="font-size:16px;font-weight:400;opacity:0.5">/100</span></div>' +
+          '<div class="health-bar-wrap"><div class="health-bar" style="width:'+score+'%"></div></div>' +
+          '<div class="health-labels"><div class="health-lbl"><span>Stars</span><span>'+up.stargazers_count.toLocaleString('pt-BR')+' ⭐</span></div><div class="health-lbl"><span>Forks</span><span>'+up.forks_count+' 🍴</span></div><div class="health-lbl"><span>Últ. release</span><span>'+(rel?_e(rel.tag_name):'—')+'</span></div><div class="health-lbl"><span>Últ. push</span><span>'+_fd(up.pushed_at)+'</span></div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="cmp-timestamp">Dados em tempo real via GitHub API · '+ts.toLocaleString('pt-BR')+' · <button class="cmp-refresh-btn" onclick="_cmpCache=null;openComparison()">↻ Atualizar agora</button></div>';
+}
+</script>
+
+</body>
+</html>

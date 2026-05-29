@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIOS Workflow Cheatsheets — 10 Workflows</title>
+<style>
+@media print { .page { page-break-after: always; } .nav { display: none; } }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f7;color:#1a1a1a;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.5}
+.nav{position:sticky;top:0;z-index:100;background:#1a1a1a;padding:8px 20px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.nav a{color:#e0e0e0;text-decoration:none;font-size:11px;padding:4px 10px;border-radius:4px;background:#2a2a2a;transition:.2s;white-space:nowrap}
+.nav a:hover,.nav a.active{background:#e87b35;color:#fff}
+.nav .brand{font-weight:800;font-size:13px;color:#e87b35;margin-right:12px;letter-spacing:-.5px}
+.page{max-width:1100px;margin:0 auto;padding:30px 24px 50px}
+h1{font-size:1.7rem;font-weight:900;color:#1a1a1a;letter-spacing:-.5px;margin-bottom:2px}
+h1 .num{color:#e87b35}
+.subtitle{font-size:.82rem;color:#666;margin-bottom:20px;border-bottom:2px solid #e87b35;padding-bottom:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.subtitle .tags span{background:#f0e6d9;color:#b35c1e;padding:2px 8px;border-radius:3px;font-size:.7rem;font-weight:700;margin-left:4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e8e4df;border-radius:8px;padding:14px 16px;position:relative}
+.card h2{font-size:.82rem;font-weight:800;color:#1a1a1a;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card h2 .n{background:#e87b35;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
+.card h2 .n.green{background:#22a559}
+.card h2 .n.red{background:#dc3545}
+.card h2 .n.purple{background:#7c3aed}
+.card h2 .n.blue{background:#2563eb}
+.card.span2{grid-column:span 2}
+.card.span3{grid-column:span 3}
+table{width:100%;border-collapse:collapse;font-size:.72rem}
+th{text-align:left;font-weight:700;color:#e87b35;border-bottom:1px solid #e8e4df;padding:3px 6px;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:3px 6px;border-bottom:1px solid #f0ece7;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.62rem;font-weight:700}
+.tag.agent{background:#e8f5e9;color:#2e7d32}
+.tag.veto{background:#fce4ec;color:#c62828}
+.tag.hook{background:#e3f2fd;color:#1565c0}
+.tag.tmpl{background:#f3e5f5;color:#6a1b9a}
+.tag.artifact{background:#fff3e0;color:#e65100}
+code{background:#f5f0ea;padding:1px 5px;border-radius:3px;font-size:.72rem;font-family:'Cascadia Code','Fira Code',monospace;color:#b35c1e}
+pre{background:#1a1a1a;color:#e0e0e0;padding:10px 12px;border-radius:6px;font-size:.68rem;line-height:1.6;overflow-x:auto;font-family:'Cascadia Code','Fira Code',monospace}
+pre .c{color:#666}
+pre .k{color:#e87b35}
+pre .s{color:#22a559}
+pre .a{color:#7c9aed}
+.flow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:.72rem;margin:6px 0}
+.flow .step{background:#f5f0ea;padding:3px 8px;border-radius:4px;font-weight:600;white-space:nowrap}
+.flow .arrow{color:#e87b35;font-weight:800}
+.flow .step.active{background:#e87b35;color:#fff}
+.flow .step.gate{background:#dc3545;color:#fff}
+ul{padding-left:14px;font-size:.72rem}
+ul li{margin-bottom:2px}
+.veto-list{list-style:none;padding:0}
+.veto-list li{padding:3px 0;border-bottom:1px solid #fce4ec;font-size:.72rem}
+.veto-list li::before{content:"⛔";margin-right:6px}
+.mini{font-size:.65rem;color:#888}
+.sep{border-top:1px solid #e8e4df;margin:10px 0}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:700;margin-right:4px}
+.badge.entry{background:#e3f2fd;color:#1565c0}
+.badge.exit{background:#e8f5e9;color:#2e7d32}
+.badge.next{background:#fff3e0;color:#e65100}
+.footer-note{text-align:center;font-size:.65rem;color:#999;margin-top:20px;padding-top:10px;border-top:1px solid #e8e4df}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">AIOS Workflows</span>
+  <a href="#decision-tree" style="background:#e87b35;color:#fff">? Decisão</a>
+  <a href="#framing">1 Framing</a>
+  <a href="#sprint-exec">2 Sprint Exec</a>
+  <a href="#sprint-close">3 Sprint Close</a>
+  <a href="#kanban-exec">4 Kanban Exec</a>
+  <a href="#kanban-close">5 Kanban Close</a>
+  <a href="#evolve-briefing">6 Evolve Briefing</a>
+  <a href="#evolve-exec">7 Evolve Exec</a>
+  <a href="#evolve-close">8 Evolve Close</a>
+  <a href="#bug-fix">9 Bug Fix</a>
+  <a href="#frontend-refresh">10 Design Refresh</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DECISION TREE                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="decision-tree">
+<h1><span class="num">?</span> Qual Workflow Usar?</h1>
+<div class="subtitle">
+  <span>Decision tree — encaminhe pro workflow certo em 10 segundos</span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">🧭</span> Árvore de Decisão</h2>
+  <pre>
+Qual é a situação?
+│
+├── Projeto <span class="k">NOVO</span> (nunca validado)
+│   └── <span class="s">/framing</span> → depois <span class="s">/sprint-exec</span> ou <span class="s">/kanban-exec</span>
+│
+├── Sprint <span class="k">ATIVO</span> (stories em execução)
+│   └── <span class="s">/sprint-exec</span>
+│
+├── Sprint <span class="k">TERMINOU</span> (PO aprovou review)
+│   └── <span class="s">/sprint-close</span>
+│
+├── Kanban <span class="k">ATIVO</span> (waves em andamento)
+│   └── <span class="s">/kanban-exec</span>
+│
+├── Kanban <span class="k">TERMINOU</span> (review aprovada)
+│   └── <span class="s">/kanban-close</span>
+│
+├── Projeto <span class="k">ENTREGUE</span>, nova feature
+│   └── <span class="s">/evolve-briefing</span> → <span class="s">/evolve-exec</span> → <span class="s">/evolve-close</span>
+│
+├── Frontend precisa <span class="k">REDESIGN</span> ou avaliação visual
+│   └── <span class="s">/design:frontend-refresh</span>
+│
+└── <span class="k">BUG</span> em qualquer fase
+    └── <span class="s">/bug-fix</span>
+  </pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">🔄</span> Ciclos Completos</h2>
+  <table>
+    <tr><th>Modo</th><th>Ciclo</th></tr>
+    <tr><td><b>BUILD</b> (Sprint)</td><td>/framing → /sprint-exec → /sprint-close → ↻</td></tr>
+    <tr><td><b>BUILD</b> (Kanban)</td><td>/framing → /kanban-exec → /kanban-close → ↻</td></tr>
+    <tr><td><b>EVOLVE</b></td><td>/evolve-briefing → /evolve-exec → /evolve-close → ↻</td></tr>
+    <tr><td><b>FIX</b></td><td>/bug-fix (qualquer fase)</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⚡</span> Regras de Transição</h2>
+  <ul>
+    <li><b>BUILD → EVOLVE:</b> após entrega completa</li>
+    <li><b>EVOLVE → SUSTAIN:</b> PO decide no /evolve-close</li>
+    <li><b>Kanban → Evolve:</b> PO decide no /kanban-close</li>
+    <li><b>Bug Fix:</b> intercala em qualquer modo</li>
+    <li><b>Brownfield:</b> sprints 5, 10, 15… (obrigatório)</li>
+  </ul>
+  <div class="sep"></div>
+  <h2><span class="n blue">🤖</span> Routines (CronCreate)</h2>
+  <ul>
+    <li><b>PR Triage</b> — 6am weekdays · label, comment, flag stale</li>
+    <li><b>Stale Branch</b> — Mon 9am · delete merged >7d</li>
+  </ul>
+  <p class="mini">Session-scoped: recriar após session expire. Ver <code>routines-usage.md</code></p>
+</div>
+
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 1: FRAMING GATE v3                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="framing">
+<h1><span class="num">1</span> Framing Gate v3 — Validação Pré-Desenvolvimento</h1>
+<div class="subtitle">
+  <span>10 phases · 9 gates · fluxo unidirecional · ~2-4h</span>
+  <span class="tags"><span>BUILD</span><span>GATE</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step">P0 Setup</span><span class="arrow">→</span>
+    <span class="step">P0.5 Discovery</span><span class="arrow">→</span>
+    <span class="step">P1 PRD</span><span class="arrow">→</span>
+    <span class="step">P2 Arch</span><span class="arrow">→</span>
+    <span class="step">P3 Squad</span><span class="arrow">→</span>
+    <span class="step">P3.5 Brand</span><span class="arrow">→</span>
+    <span class="step">P4 UX+Biz</span><span class="arrow">→</span>
+    <span class="step">P5 Method</span><span class="arrow">→</span>
+    <span class="step">P5.5 Slides</span><span class="arrow">→</span>
+    <span class="step">P5.9 DevOps</span><span class="arrow">→</span>
+    <span class="step gate">P6 Approval</span><span class="arrow">→</span>
+    <span class="step active">P7 Epic+Sprint</span>
+  </div>
+  <p class="mini">Phase 3 ∥ 3.5 (paralelo) · Phase 4a ∥ 4b (paralelo) · Nada volta. NUNCA.</p>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Phases × Agents × Tasks</h2>
+  <table>
+    <tr><th>Phase</th><th>Agent</th><th>Task</th><th>Output</th></tr>
+    <tr><td>0 Setup</td><td><span class="tag agent">@pm</span></td><td>—</td><td><code>project.yaml</code></td></tr>
+    <tr><td>0.5 Discovery</td><td><span class="tag agent">@analyst</span> <span class="tag agent">@pm</span> <span class="tag agent">@ux</span></td><td>framing-discovery.md</td><td>OST + Assumption Map + Journey</td></tr>
+    <tr><td>1 PRD</td><td><span class="tag agent">@pm</span></td><td>framing-kickoff.md</td><td>PRD c/ FR→OPP trace</td></tr>
+    <tr><td>2 Arch</td><td><span class="tag agent">@architect</span></td><td>framing-architect-brief.md</td><td>C4 L1-L2 + capabilities</td></tr>
+    <tr><td>3 Squad</td><td><span class="tag agent">@architect</span> <span class="tag agent">@squad-chief</span></td><td>—</td><td>squad-assessment.yaml</td></tr>
+    <tr><td>3.5 Brand</td><td><span class="tag agent">@brand×3</span></td><td>framing-brand-book.md</td><td>Identity Prism + Archetype</td></tr>
+    <tr><td>4a UX</td><td><span class="tag agent">@ux</span> <span class="tag agent">@design</span> <span class="tag agent">@huashu</span></td><td>framing-ux-prototype.md</td><td>DESIGN.md + prototype.html (Huashu)</td></tr>
+    <tr><td>4b Business</td><td><span class="tag agent">@dsc</span></td><td>framing-dsc-briefing.md</td><td>KPIs + glossário</td></tr>
+    <tr><td>5 Method</td><td><span class="tag agent">@methodology</span> <span class="tag agent">@agile-coach</span></td><td>framing-methodology.md</td><td>Metodologia + Gestão Projeto + Taxonomy</td></tr>
+    <tr><td>5.5 Slides</td><td><span class="tag agent">@pm</span> <span class="tag agent">@carmine</span> <span class="tag agent">@garr</span> <span class="tag agent">@huashu</span></td><td>framing-storytelling.md</td><td>Step 2a: specs (garr+carmine) → Step 2b: HTML+PPTX (Huashu)</td></tr>
+    <tr><td>5.9 DevOps</td><td><span class="tag agent">@devops</span></td><td>—</td><td>CI workflows pushed</td></tr>
+    <tr><td>6 Approval</td><td><span class="tag agent">@pm</span></td><td>framing-pm-approval.md</td><td>FRAMING_APPROVED.yaml</td></tr>
+    <tr><td>7 Epic+Plan</td><td><span class="tag agent">@pm</span> <span class="tag agent">@sm</span> <span class="tag agent">@agile-coach</span></td><td>agile-coach-sprint-planning.md</td><td>epic-plan + sprint-plan</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto Conditions</h2>
+  <ul class="veto-list">
+    <li>Discovery sem evidências (≥3)</li>
+    <li>PRD sem FR→OPP traceability</li>
+    <li>Arch sem C4/stack/security</li>
+    <li>Capability sem squad</li>
+    <li>DESIGN.md não gerado</li>
+    <li>Metodologia sem justificativa</li>
+    <li>PO não aprovou storytelling</li>
+    <li>Huashu *slides sem presentation-script.md</li>
+    <li>Step 2b sem specs do Step 2a</li>
+    <li>Dashboard não criado (P5)</li>
+    <li>Taxonomy não definida (P5)</li>
+    <li>DevOps workflows não pushed</li>
+    <li>Gate anterior não aprovado</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> feature-brief-tmpl.yaml</li>
+    <li><span class="tag tmpl">tmpl</span> assumption-map-tmpl.yaml</li>
+    <li><span class="tag tmpl">tmpl</span> opportunity-solution-tree-tmpl.yaml</li>
+    <li><span class="tag tmpl">tmpl</span> framing-approved-tmpl.yaml</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector</li>
+    <li><span class="tag hook">Post</span> post-edit-lint, post-status-publish</li>
+    <li><span class="tag hook">Post</span> budget-tracker, canary-detector</li>
+    <li><span class="tag hook">Start</span> claude-md-audit, session-lock</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n green">🎯</span> Entry / Exit</h2>
+  <p><span class="badge entry">ENTRY</span> Projeto novo precisa validação</p>
+  <p><span class="badge exit">EXIT</span> FRAMING_APPROVED.yaml assinado</p>
+  <p><span class="badge next">NEXT</span> <code>/sprint-exec</code> ou <code>/kanban-exec</code></p>
+  <div class="sep"></div>
+  <pre><span class="k">/framing</span>              <span class="c"># auto-detect</span>
+<span class="k">/framing</span> intake {name} <span class="c"># com nome</span></pre>
+</div>
+
+
+<div class="card">
+  <h2><span class="n">📦</span> Artefatos (16)</h2>
+  <table>
+    <tr><th>Path</th><th>Formato</th></tr>
+    <tr><td>docs/discovery/research-findings.md</td><td>MD</td></tr>
+    <tr><td>docs/discovery/ost.yaml</td><td>YAML</td></tr>
+    <tr><td>docs/discovery/assumption-map.yaml</td><td>YAML</td></tr>
+    <tr><td>docs/prd/{slug}-prd.md</td><td>MD</td></tr>
+    <tr><td>docs/architecture/{slug}-arch.md</td><td>MD</td></tr>
+    <tr><td>docs/framing/squad-assessment.yaml</td><td>YAML</td></tr>
+    <tr><td>docs/framing/brand-identity-brief.yaml</td><td>YAML</td></tr>
+    <tr><td>docs/ux/DESIGN.md</td><td>MD</td></tr>
+    <tr><td>site/framing-presentation.html</td><td>HTML</td></tr>
+    <tr><td>docs/framing/methodology.yaml</td><td>YAML</td></tr>
+    <tr><td><b>site/sprints.html</b></td><td><b>HTML</b></td></tr>
+    <tr><td><b>data/sprint-manifest.yaml</b></td><td><b>YAML</b></td></tr>
+    <tr><td><b>scripts/build-dashboard.js</b></td><td><b>JS</b></td></tr>
+    <tr><td>docs/framing/FRAMING_APPROVED.yaml</td><td>YAML</td></tr>
+    <tr><td>docs/stories/epic-plan.yaml</td><td>YAML</td></tr>
+    <tr><td>docs/sprints/sprint-plan.yaml</td><td>YAML</td></tr>
+  </table>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /framing · "Se não está documentado, não aconteceu." — PV</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 2: SPRINT EXEC                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="sprint-exec">
+<h1><span class="num">2</span> Sprint Exec — Stories → Review HTML</h1>
+<div class="subtitle">
+  <span>3 phases · SDC por story · E2E obrigatório · YOLO | Interactive | Preflight</span>
+  <span class="tags"><span>BUILD</span><span>EXEC</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step gate">P0 Pre-flight</span><span class="arrow">→</span>
+    <span class="step">P1 SDC Loop</span><span class="arrow">→</span>
+    <span class="step">↳ @po Validate</span><span class="arrow">→</span>
+    <span class="step active">↳ @dev Implement</span><span class="arrow">→</span>
+    <span class="step">↳ @qa Gate</span><span class="arrow">→</span>
+    <span class="step">↳ Bug Loop</span><span class="arrow">→</span>
+    <span class="step">P2 E2E</span><span class="arrow">→</span>
+    <span class="step">Review HTML</span><span class="arrow">→</span>
+    <span class="step gate">Deploy</span><span class="arrow">→</span>
+    <span class="step active">PO Aprova</span>
+  </div>
+  <p class="mini">P1 repete por story (respeitando deps). Bug Loop max 5 iter. E2E FAIL = Review bloqueada.</p>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Phases × Agents × Detalhes</h2>
+  <table>
+    <tr><th>Phase</th><th>Agent</th><th>Task</th><th>Output</th></tr>
+    <tr><td>0 Pre-flight</td><td>—</td><td>—</td><td>Planning approved? DoR ok? Stories Ready?</td></tr>
+    <tr><td>1a Deps</td><td>—</td><td>—</td><td>Verifica epic-plan.yaml</td></tr>
+    <tr><td>1c Validate</td><td><span class="tag agent">@po</span></td><td>validate-next-story.md</td><td>Draft → Ready (10-pt checklist)</td></tr>
+    <tr><td>1d Implement</td><td><span class="tag agent">@dev</span></td><td>dev-develop-story.md</td><td>Code + tests + File List</td></tr>
+    <tr><td>1e QA Gate</td><td><span class="tag agent">@qa</span></td><td>qa-gate.md</td><td>7 checks: PASS|FAIL|CONCERNS</td></tr>
+    <tr><td>1f Bug Loop</td><td><span class="tag agent">@dev</span>↔<span class="tag agent">@qa</span></td><td>—</td><td>Fix → Retest (max 5)</td></tr>
+    <tr><td>1g Publish</td><td>—</td><td>—</td><td><code>publish-status.js</code> (~3s)</td></tr>
+    <tr><td>2c E2E</td><td><span class="tag agent">@qa</span></td><td>qa-sprint-gate.md</td><td>Playwright E2E (max 3 iter)</td></tr>
+    <tr><td>2d Review</td><td><span class="tag agent">@qa</span> + <span class="tag agent">/design</span></td><td>qa-sprint-gate.md §Fase 6</td><td><code>site/sprint{N}-review.html</code></td></tr>
+    <tr><td>2e Deploy</td><td>—</td><td>—</td><td><code>vercel --prod</code></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto Conditions</h2>
+  <ul class="veto-list">
+    <li>Planning NÃO aprovado pelo PO</li>
+    <li>Story Draft no backlog</li>
+    <li>DoR incompleto</li>
+    <li>QA FAIL após 3 iterações</li>
+    <li>Build smoke falhou</li>
+    <li>E2E FAIL → Review bloqueada</li>
+    <li>Bug CRITICAL/HIGH aberto</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n">2</span> QA Gate — 7 Checks</h2>
+  <ul>
+    <li>☐ Code review (patterns, readability)</li>
+    <li>☐ Build smoke (<code>turbo build</code>)</li>
+    <li>☐ Playwright/UI tests per AC</li>
+    <li>☐ Todos ACs passando</li>
+    <li>☐ Sem regressões</li>
+    <li>☐ Performance aceitável</li>
+    <li>☐ Docs atualizados</li>
+  </ul>
+  <div class="sep"></div>
+  <p class="mini"><b>Verdicts:</b> PASS → Done | CONCERNS → Done c/ obs | FAIL → @dev fix</p>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> story-template.md</li>
+    <li><span class="tag tmpl">tmpl</span> dor-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> sprint-dashboard-tmpl.html</li>
+    <li><span class="tag tmpl">html</span> sprint{N}-review.html (Nocturne Premium)</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> dor-gate-checker, context-injector</li>
+    <li><span class="tag hook">Post</span> post-edit-lint, post-write-typecheck</li>
+    <li><span class="tag hook">Post</span> post-status-publish, post-bash-test-gate</li>
+    <li><span class="tag hook">Post</span> budget-tracker, canary-detector</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n green">🎯</span> Entry / Exit</h2>
+  <p><span class="badge entry">ENTRY</span> Planning aprovado, stories Ready</p>
+  <p><span class="badge exit">EXIT</span> E2E PASS, Review HTML deployed</p>
+  <p><span class="badge next">NEXT</span> <code>/sprint-close {N}</code></p>
+  <div class="sep"></div>
+  <pre><span class="k">/sprint-exec</span>             <span class="c"># auto</span>
+<span class="k">/sprint-exec</span> 2           <span class="c"># sprint 2</span>
+<span class="k">/sprint-exec</span> 2 yolo      <span class="c"># modo YOLO</span>
+<span class="k">/sprint-exec</span> 2 preflight <span class="c"># plan-first</span></pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">📦</span> Artefatos</h2>
+  <table>
+    <tr><th>Artefato</th><th>Path</th></tr>
+    <tr><td>Stories</td><td><code>docs/stories/{id}.story.md</code></td></tr>
+    <tr><td>Review HTML</td><td><code>site/sprint{N}-review.html</code></td></tr>
+    <tr><td>Bug Tracker</td><td><code>docs/qa/sprint{N}-bugs.md</code></td></tr>
+    <tr><td>Status</td><td><code>data/status.json</code> (Blob)</td></tr>
+  </table>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /sprint-exec · "Se PO encontra bug na review, QA falhou." — Regra de Processo</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 3: SPRINT CLOSE                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="sprint-close">
+<h1><span class="num">3</span> Sprint Close — Retro → Planning N+1</h1>
+<div class="subtitle">
+  <span>4 steps · cerimônia obrigatória · retro antes de planning</span>
+  <span class="tags"><span>BUILD</span><span>CLOSE</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step gate">S0 Detect Review</span><span class="arrow">→</span>
+    <span class="step">S1 Verify Retro N-1</span><span class="arrow">→</span>
+    <span class="step active">S1 Gerar Retro</span><span class="arrow">→</span>
+    <span class="step">S2 Update Status</span><span class="arrow">→</span>
+    <span class="step">S3a Epics done?</span><span class="arrow">→</span>
+    <span class="step">S3b Create Stories N+1</span><span class="arrow">→</span>
+    <span class="step gate">S3c Validate Taxonomy</span><span class="arrow">→</span>
+    <span class="step active">S3 Planning N+1</span><span class="arrow">→</span>
+    <span class="step">S4 Deploy</span>
+  </div>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Steps × Agents</h2>
+  <table>
+    <tr><th>Step</th><th>Agent</th><th>Output</th></tr>
+    <tr><td>0 Detect</td><td>—</td><td>Review HTML + PO approved?</td></tr>
+    <tr><td>1 Retro N-1 verify</td><td><span class="tag agent">@pm</span></td><td>DONE/NOT-DONE/DEFERRED</td></tr>
+    <tr><td>1 Gerar Retro</td><td><span class="tag agent">@agile-coach</span></td><td><code>sprint{N}-retro.md</code></td></tr>
+    <tr><td>2 Status</td><td>—</td><td>sprint-manifest → done</td></tr>
+    <tr><td>3b Stories N+1</td><td><span class="tag agent">@sm</span></td><td>Story files (Draft)</td></tr>
+    <tr><td>3c Validate</td><td><span class="tag agent">@agile-coach</span></td><td>Taxonomia + Sinapse audit</td></tr>
+    <tr><td>3 Planning</td><td><span class="tag agent">@agile-coach</span></td><td><code>sprint{N+1}-planning.md</code></td></tr>
+    <tr><td>4 Deploy</td><td>—</td><td>publish-status.js ou full deploy</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto Conditions</h2>
+  <ul class="veto-list">
+    <li>Review HTML não existe</li>
+    <li>Review NÃO aprovada pelo PO</li>
+    <li>E2E não passou</li>
+    <li>Stories não-terminais</li>
+    <li>Retro sem action items tipados</li>
+    <li>Retro N-1 não revisada</li>
+    <li>Action item sem owner/prazo</li>
+    <li>4+ sprints sem brownfield (5,10,15…)</li>
+  </ul>
+  <div class="sep"></div>
+  <h2><span class="n green">🎯</span> Entry / Exit</h2>
+  <p><span class="badge entry">ENTRY</span> /sprint-exec done, PO aprovou</p>
+  <p><span class="badge exit">EXIT</span> Retro + Planning N+1</p>
+  <p><span class="badge next">NEXT</span> <code>/sprint-exec {N+1}</code></p>
+  <div class="sep"></div>
+  <pre><span class="k">/sprint-close</span>    <span class="c"># auto-detect</span>
+<span class="k">/sprint-close</span> 1  <span class="c"># force Sprint 1</span></pre>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">2</span> Retro — Action Items Tipados (OBRIGATÓRIO)</h2>
+  <table>
+    <tr><th>Tipo</th><th>Exemplo</th><th>Destino</th></tr>
+    <tr><td><code>MEMORY</code></td><td>Salvar pattern descoberto</td><td>memory/*.md</td></tr>
+    <tr><td><code>HOOK</code></td><td>Criar hook para validação</td><td>.claude/settings.json</td></tr>
+    <tr><td><code>RULE</code></td><td>Nova regra de processo</td><td>.claude/rules/*.md</td></tr>
+    <tr><td><code>SKILL</code></td><td>Novo skill invocável</td><td>.claude/skills/</td></tr>
+    <tr><td><code>DOD</code></td><td>Atualizar Definition of Done</td><td>story-template.md</td></tr>
+    <tr><td><code>DOR</code></td><td>Atualizar Definition of Ready</td><td>dor-tmpl.md</td></tr>
+    <tr><td><code>TASK</code></td><td>Nova task executável</td><td>.aios-core/tasks/</td></tr>
+    <tr><td><code>WORKFLOW</code></td><td>Ajustar workflow existente</td><td>.aios-core/workflows/</td></tr>
+  </table>
+  <p class="mini">Ação sem tipo = ação sem destino → VETO. "Cerimônia sem artefato é reunião." — Kai</p>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> retro-action-items-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> sprint-goal-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> dor-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> ceremony-register-tmpl.yaml</li>
+    <li><span class="tag tmpl">html</span> retros.html (Nocturne Premium)</li>
+    <li><span class="tag tmpl">html</span> sprint{N}-planning.html (Nocturne)</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector, dor-gate-checker</li>
+    <li><span class="tag hook">Post</span> post-status-publish (auto deploy)</li>
+    <li><span class="tag hook">Post</span> workflow-intelligence (suggest next)</li>
+    <li><span class="tag hook">Post</span> agentlint-hook (valida agents)</li>
+    <li><span class="tag hook">Post</span> budget-tracker, canary-detector</li>
+  </ul>
+  <p class="mini">Hooks são globais — mesmos do AIOS. Não há hooks específicos de sprint-close.</p>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Artefatos</h2>
+  <table>
+    <tr><th>Artefato</th><th>Path</th></tr>
+    <tr><td>Retro</td><td><code>docs/sprints/sprint{N}-retro.md</code></td></tr>
+    <tr><td>Retro HTML</td><td><code>site/retros.html</code></td></tr>
+    <tr><td>Planning</td><td><code>docs/sprints/sprint{N+1}-planning.md</code></td></tr>
+    <tr><td>Planning HTML</td><td><code>site/sprint{N+1}-planning.html</code></td></tr>
+    <tr><td>Stories N+1</td><td><code>docs/stories/{id}.story.md</code></td></tr>
+    <tr><td>Status</td><td><code>data/sprint-manifest.yaml</code></td></tr>
+  </table>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /sprint-close · "Retro da Sprint N DEVE existir ANTES do Planning N+1." — Kai</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 4: KANBAN EXEC                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="kanban-exec">
+<h1><span class="num">4</span> Kanban Exec — Waves + E2E</h1>
+<div class="subtitle">
+  <span>5 phases · wave-based · DoR loop · brownfield obrigatório</span>
+  <span class="tags"><span>BUILD</span><span>KANBAN</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step gate">P0 Framing?</span><span class="arrow">→</span>
+    <span class="step">P0.5 Wave Plan</span><span class="arrow">→</span>
+    <span class="step gate">P1 DoR Gate</span><span class="arrow">→</span>
+    <span class="step active">P2 Dev↔QA Loop</span><span class="arrow">→</span>
+    <span class="step">P3 Wave Pulse</span><span class="arrow">→</span>
+    <span class="step">Hard Stop</span><span class="arrow">→</span>
+    <span class="step">↻ Próx Wave</span><span class="arrow">→</span>
+    <span class="step gate">P4 E2E Final</span><span class="arrow">→</span>
+    <span class="step active">P5 Review HTML</span>
+  </div>
+  <p class="mini">Waves: Foundation→CRUD→Integration→Core UI→Secondary. 2 stories finais obrigatórias: Brownfield + E2E.</p>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Phases × Agents</h2>
+  <table>
+    <tr><th>Phase</th><th>Agent</th><th>Output</th></tr>
+    <tr><td>0 Gate entrada</td><td>—</td><td>FRAMING_APPROVED check</td></tr>
+    <tr><td>0.5 Wave plan</td><td>—</td><td><code>kanban-checkpoint.yaml</code></td></tr>
+    <tr><td>1 DoR Gate</td><td><span class="tag agent">@agile-coach</span>↔<span class="tag agent">@sm</span></td><td>Stories DoR PASS (max 5 iter)</td></tr>
+    <tr><td>2a Implement</td><td><span class="tag agent">@dev</span></td><td>Code + commit + File List</td></tr>
+    <tr><td>2b QA Gate</td><td><span class="tag agent">@qa</span></td><td>7 checks + bug loop</td></tr>
+    <tr><td>3 Wave Pulse</td><td><span class="tag agent">@agile-coach</span></td><td>Micro-retro (~30s)</td></tr>
+    <tr><td>4 E2E Final</td><td><span class="tag agent">@qa</span></td><td>Playwright + QC checks</td></tr>
+    <tr><td>5 Review</td><td><span class="tag agent">@qa</span></td><td><code>site/kanban-review.html</code></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto Conditions</h2>
+  <ul class="veto-list">
+    <li>Framing NÃO aprovado</li>
+    <li>Story sem DoR completo</li>
+    <li>QA FAIL após 3 iter</li>
+    <li>Build smoke FAIL</li>
+    <li>E2E FAIL → Review bloqueada</li>
+    <li>Brownfield não executado</li>
+    <li>4+ cycles sem brownfield</li>
+  </ul>
+  <div class="sep"></div>
+  <h2><span class="n green">🎯</span> Entry / Exit</h2>
+  <p><span class="badge entry">ENTRY</span> Framing approved, Kanban-Lite</p>
+  <p><span class="badge exit">EXIT</span> E2E PASS, Review HTML</p>
+  <p><span class="badge next">NEXT</span> <code>/kanban-close</code></p>
+  <pre><span class="k">/kanban-exec</span>         <span class="c"># auto</span>
+<span class="k">/kanban-exec</span> resume  <span class="c"># retoma</span></pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">2</span> Wave Pulse (Micro-Retro)</h2>
+  <p>Ao final de cada wave, ~30s:</p>
+  <ul>
+    <li><b>broke:</b> o que quebrou nesta wave?</li>
+    <li><b>expensive:</b> o que custou mais que previsto?</li>
+    <li><b>action:</b> 1 ação tipada (MEMORY|HOOK|RULE|...)</li>
+  </ul>
+  <div class="sep"></div>
+  <p class="mini">Wave Pulse action NÃO absorvida → Hard Stop → próxima wave bloqueada.</p>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> story-template.md</li>
+    <li><span class="tag tmpl">tmpl</span> dor-tmpl.md</li>
+    <li><span class="tag tmpl">html</span> kanban-review.html (Nocturne Premium)</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector, dor-gate-checker</li>
+    <li><span class="tag hook">Post</span> post-edit-lint, post-status-publish</li>
+    <li><span class="tag hook">Post</span> post-write-typecheck, budget-tracker, canary-detector</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n">📦</span> Artefatos</h2>
+  <table>
+    <tr><th>Artefato</th><th>Path</th></tr>
+    <tr><td>Stories</td><td><code>docs/stories/{id}.story.md</code></td></tr>
+    <tr><td>Checkpoint</td><td><code>docs/kanban-checkpoint.yaml</code></td></tr>
+    <tr><td>Review HTML</td><td><code>site/kanban-review.html</code></td></tr>
+    <tr><td>Status</td><td><code>data/status.json</code> (Blob)</td></tr>
+  </table>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /kanban-exec · "Nada volta num fluxo. NUNCA." — PV</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 5: KANBAN CLOSE                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="kanban-close">
+<h1><span class="num">5</span> Kanban Close — Retro → Next Mode</h1>
+<div class="subtitle">
+  <span>4 steps · brownfield condicional · decisão de modo</span>
+  <span class="tags"><span>BUILD</span><span>CLOSE</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step gate">S0 Review OK?</span><span class="arrow">→</span>
+    <span class="step">S1 Verify Prev Actions</span><span class="arrow">→</span>
+    <span class="step active">S1 Gerar Retro</span><span class="arrow">→</span>
+    <span class="step">S2 Update Status</span><span class="arrow">→</span>
+    <span class="step">S3 Brownfield?</span><span class="arrow">→</span>
+    <span class="step gate">S4 Next Mode</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2><span class="n">1</span> Steps × Agents</h2>
+  <table>
+    <tr><th>Step</th><th>Agent</th><th>Output</th></tr>
+    <tr><td>0 Detect</td><td>—</td><td>Review approved?</td></tr>
+    <tr><td>1 Retro</td><td><span class="tag agent">@agile-coach</span></td><td><code>kanban-retro.md</code></td></tr>
+    <tr><td>2 Status</td><td>—</td><td>checkpoint → done</td></tr>
+    <tr><td>3 Brownfield</td><td><span class="tag agent">@architect</span></td><td>Assessment (se 4+ cycles)</td></tr>
+    <tr><td>4 Mode</td><td><span class="tag agent">@pm</span></td><td>EVOLVE | SUSTAIN | Archive</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto + Entry/Exit</h2>
+  <ul class="veto-list">
+    <li>Review não aprovada pelo PO</li>
+    <li>Retro sem actions tipados</li>
+    <li>4+ cycles sem brownfield</li>
+  </ul>
+  <div class="sep"></div>
+  <p><span class="badge entry">ENTRY</span> /kanban-exec done, PO aprovou</p>
+  <p><span class="badge exit">EXIT</span> Retro + modo decidido</p>
+  <p><span class="badge next">NEXT</span> <code>/evolve-briefing</code> ou SUSTAIN</p>
+  <pre><span class="k">/kanban-close</span>  <span class="c"># auto-detect</span></pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">📦</span> Artefatos</h2>
+  <table>
+    <tr><th>Artefato</th><th>Path</th></tr>
+    <tr><td>Retro</td><td><code>docs/kanban/kanban-retro.md</code></td></tr>
+    <tr><td>Status</td><td><code>docs/kanban-checkpoint.yaml</code></td></tr>
+    <tr><td>Brownfield</td><td><code>docs/brownfield/assessment.md</code></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> retro-action-items-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> ceremony-register-tmpl.yaml</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector</li>
+    <li><span class="tag hook">Post</span> post-status-publish, budget-tracker, canary-detector</li>
+    <li><span class="tag hook">Post</span> workflow-intelligence</li>
+  </ul>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /kanban-close · "Automação antes de delegação." — PV</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 6: EVOLVE BRIEFING                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="evolve-briefing">
+<h1><span class="num">6</span> Evolve Briefing — Feature Brief (Entry Gate)</h1>
+<div class="subtitle">
+  <span>4 steps · 6-point checklist · ~15min · substitui Framing para EVOLVE</span>
+  <span class="tags"><span>EVOLVE</span><span>GATE</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step active">S1 @pm Create Brief</span><span class="arrow">→</span>
+    <span class="step gate">S2 @po Validate (6pt)</span><span class="arrow">→</span>
+    <span class="step">S3 @sm Create Stories</span><span class="arrow">→</span>
+    <span class="step active">S4 → /evolve-exec</span>
+  </div>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Feature Brief — Seções Obrigatórias</h2>
+  <table>
+    <tr><th>Seção</th><th>Conteúdo</th></tr>
+    <tr><td><code>problem</code></td><td>Problema evidenciado com dados</td></tr>
+    <tr><td><code>value</code></td><td>Valor business + user</td></tr>
+    <tr><td><code>scope</code></td><td>IN + OUT explícitos</td></tr>
+    <tr><td><code>waves</code></td><td>Wave partitioning (1+ waves)</td></tr>
+    <tr><td><code>risks</code></td><td>Riscos + mitigação</td></tr>
+    <tr><td><code>dependencies</code></td><td>Técnicas + externas</td></tr>
+    <tr><td><code>change_summary</code></td><td>De → Para (3-10 items, risk-scored)</td></tr>
+    <tr><td><code>workflow_impact</code></td><td>Impacto nos 9 workflows</td></tr>
+  </table>
+  <div class="sep"></div>
+  <h2><span class="n green">✓</span> PO Checklist (6 points)</h2>
+  <ul>
+    <li>☐ Problema claro e evidenciado</li>
+    <li>☐ Valor de negócio articulado</li>
+    <li>☐ Escopo IN/OUT definido</li>
+    <li>☐ Wave partitioning feito</li>
+    <li>☐ Riscos documentados</li>
+    <li>☐ Dependências mapeadas</li>
+  </ul>
+  <p class="mini">≥4/6 = GO · <4/6 = NO-GO</p>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto + Escalation</h2>
+  <ul class="veto-list">
+    <li>Brief sem problema evidenciado</li>
+    <li>Brief sem escopo IN/OUT</li>
+    <li>Score <4/6</li>
+    <li>Escopo >13 stories → Framing</li>
+    <li>Mudança arquitetural → Framing</li>
+    <li>change_summary incompleto</li>
+    <li>workflow_impact ausente</li>
+  </ul>
+  <div class="sep"></div>
+  <p><span class="badge entry">ENTRY</span> Projeto já entregue (BUILD done)</p>
+  <p><span class="badge exit">EXIT</span> Brief approved + stories criadas</p>
+  <p><span class="badge next">NEXT</span> <code>/evolve-exec</code></p>
+  <div class="sep"></div>
+  <pre><span class="k">/evolve-briefing</span>
+<span class="k">*create-brief</span> {project}
+<span class="k">*validate-brief</span> {id}
+<span class="k">*draft-from-brief</span> {id}</pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">📦</span> Artefatos</h2>
+  <table>
+    <tr><th>Artefato</th><th>Path</th></tr>
+    <tr><td>Feature Brief</td><td><code>docs/evolve/FB-{SEQ}.yaml</code></td></tr>
+    <tr><td>Checkpoint</td><td><code>docs/evolve/checkpoint-FB-{SEQ}.yaml</code></td></tr>
+    <tr><td>Stories</td><td><code>docs/stories/{id}.story.md</code></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> feature-brief-tmpl.yaml</li>
+    <li><span class="tag tmpl">tmpl</span> story-template.md</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector</li>
+    <li><span class="tag hook">Post</span> post-status-publish, budget-tracker, canary-detector</li>
+  </ul>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /evolve-briefing · "Feature Brief é Framing Gate em miniatura — mesma disciplina, 1% do tempo." — Morgan</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 7: EVOLVE EXEC                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="evolve-exec">
+<h1><span class="num">7</span> Evolve Exec — Feature Implementation (Kanban-Lite)</h1>
+<div class="subtitle">
+  <span>3 phases · waves · SDC por story · recovery system</span>
+  <span class="tags"><span>EVOLVE</span><span>EXEC</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step gate">P0 Pre-flight</span><span class="arrow">→</span>
+    <span class="step">P1 Wave N</span><span class="arrow">→</span>
+    <span class="step active">↳ @dev SDC</span><span class="arrow">→</span>
+    <span class="step">↳ @qa Gate</span><span class="arrow">→</span>
+    <span class="step">↳ QA Loop</span><span class="arrow">→</span>
+    <span class="step">Wave Pulse</span><span class="arrow">→</span>
+    <span class="step gate">Hard Stop</span><span class="arrow">→</span>
+    <span class="step">↻ Wave N+1</span><span class="arrow">→</span>
+    <span class="step">P2 Brownfield?</span><span class="arrow">→</span>
+    <span class="step gate">P2 Build Smoke</span><span class="arrow">→</span>
+    <span class="step active">P2 E2E</span>
+  </div>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Phases × Agents</h2>
+  <table>
+    <tr><th>Phase</th><th>Agent</th><th>Output</th></tr>
+    <tr><td>0 Pre-flight</td><td>—</td><td>Brief approved? Stories Ready? DoR?</td></tr>
+    <tr><td>1 @dev SDC</td><td><span class="tag agent">@dev</span></td><td>Code + tests + File List</td></tr>
+    <tr><td>1 Recovery</td><td>—</td><td>recovery-system.js (stuck→rollback→retry×3)</td></tr>
+    <tr><td>1 @qa Gate</td><td><span class="tag agent">@qa</span></td><td>7 checks: PASS|FAIL</td></tr>
+    <tr><td>1 QA Loop</td><td><span class="tag agent">@dev</span>↔<span class="tag agent">@qa</span></td><td>Fix→Retest (max 5)</td></tr>
+    <tr><td>1 Wave Pulse</td><td><span class="tag agent">@agile-coach</span></td><td>broke/expensive/action</td></tr>
+    <tr><td>2a Brownfield</td><td><span class="tag agent">@architect</span></td><td>Assessment (se 4+ cycles)</td></tr>
+    <tr><td>2b Build smoke</td><td>—</td><td><code>turbo build --filter=app</code></td></tr>
+    <tr><td>2c E2E</td><td><span class="tag agent">@qa</span></td><td>E2E integrado</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto Conditions</h2>
+  <ul class="veto-list">
+    <li>Feature Brief não aprovado</li>
+    <li>Story Draft no backlog</li>
+    <li>Build smoke falhou</li>
+    <li>Wave Pulse action não absorvida</li>
+    <li>4+ cycles sem brownfield</li>
+  </ul>
+  <div class="sep"></div>
+  <h2><span class="n green">🎯</span> Entry / Exit</h2>
+  <p><span class="badge entry">ENTRY</span> Brief approved, stories Ready</p>
+  <p><span class="badge exit">EXIT</span> All Done, E2E passing</p>
+  <p><span class="badge next">NEXT</span> <code>/evolve-close</code></p>
+  <pre><span class="k">/evolve-exec</span>  <span class="c"># auto-detect FB</span></pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">2</span> Checkpoint YAML</h2>
+  <pre><span class="k">feature_brief:</span> <span class="s">"FB-014"</span>
+<span class="k">mode:</span> <span class="s">"EVOLVE"</span>
+<span class="k">current_wave:</span> 2
+<span class="k">total_waves:</span> 3
+<span class="k">stories_done:</span> 8
+<span class="k">stories_total:</span> 13
+<span class="k">wave_pulse:</span>
+  <span class="k">wave_2:</span>
+    <span class="a">broke:</span> []
+    <span class="a">expensive:</span> []
+    <span class="a">action:</span>
+      <span class="a">type:</span> <span class="s">HOOK</span>
+      <span class="a">description:</span> <span class="s">"injection-scan + canary + budget"</span></pre>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> story-template.md</li>
+    <li><span class="tag tmpl">tmpl</span> dor-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> feature-brief-tmpl.yaml</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector, dor-gate-checker</li>
+    <li><span class="tag hook">Post</span> post-edit-lint, post-status-publish</li>
+    <li><span class="tag hook">Post</span> post-write-typecheck, budget-tracker, canary-detector</li>
+  </ul>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /evolve-exec · "EVOLVE não é desculpa pra pular processo." — Kai</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 8: EVOLVE CLOSE                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="evolve-close">
+<h1><span class="num">8</span> Evolve Close — Review + Retro + Next Mode</h1>
+<div class="subtitle">
+  <span>6 steps · E2E gate · PO verdict · brownfield condicional</span>
+  <span class="tags"><span>EVOLVE</span><span>CLOSE</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo Completo</h2>
+  <div class="flow">
+    <span class="step gate">S1 E2E Final</span><span class="arrow">→</span>
+    <span class="step active">S2 Review HTML</span><span class="arrow">→</span>
+    <span class="step gate">S3 PO Verdict</span><span class="arrow">→</span>
+    <span class="step">S4 Retro/Pulse</span><span class="arrow">→</span>
+    <span class="step">S5 Brownfield?</span><span class="arrow">→</span>
+    <span class="step active">S6 Next Mode</span>
+  </div>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Steps × Agents</h2>
+  <table>
+    <tr><th>Step</th><th>Agent</th><th>Output</th></tr>
+    <tr><td>1 E2E Final</td><td><span class="tag agent">@qa</span></td><td>E2E contra banco real</td></tr>
+    <tr><td>2 Review HTML</td><td><span class="tag agent">@qa</span></td><td><code>site/evolve-FB-{SEQ}-review.html</code></td></tr>
+    <tr><td>3 PO Verdict</td><td>PO</td><td>APROVADO | REPROVADO | PARCIAL</td></tr>
+    <tr><td>4 Retro</td><td><span class="tag agent">@agile-coach</span></td><td><code>FB-{SEQ}-retro.md</code></td></tr>
+    <tr><td>5 Brownfield</td><td><span class="tag agent">@architect</span></td><td>Assessment (se 4+ cycles)</td></tr>
+    <tr><td>6 Mode</td><td><span class="tag agent">@pm</span></td><td>EVOLVE | SUSTAIN | Archive</td></tr>
+  </table>
+  <div class="sep"></div>
+  <h2><span class="n">2</span> PO Verdicts</h2>
+  <table>
+    <tr><th>Verdict</th><th>Ação</th></tr>
+    <tr><td><b>APROVADO</b></td><td>Continue → Retro → Next Mode</td></tr>
+    <tr><td><b>REPROVADO</b></td><td>Volta /evolve-exec</td></tr>
+    <tr><td><b>PARCIAL</b></td><td>Aprova parte, abre novo FB pro resto</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto + Entry/Exit</h2>
+  <ul class="veto-list">
+    <li>E2E não executado ou FAIL</li>
+    <li>HTML não gerado</li>
+    <li>PO não assinou</li>
+    <li>Retro sem actions tipados</li>
+    <li>4+ cycles sem brownfield</li>
+  </ul>
+  <div class="sep"></div>
+  <p><span class="badge entry">ENTRY</span> /evolve-exec done, stories Done</p>
+  <p><span class="badge exit">EXIT</span> PO verdict + Retro + mode</p>
+  <p><span class="badge next">NEXT</span> <code>/evolve-briefing</code> ou SUSTAIN</p>
+  <div class="sep"></div>
+  <h2><span class="n">📦</span> Artefatos</h2>
+  <table>
+    <tr><th>Artefato</th><th>Path</th></tr>
+    <tr><td>Review HTML</td><td><code>site/evolve-FB-{SEQ}-review.html</code></td></tr>
+    <tr><td>Retro</td><td><code>docs/evolve/FB-{SEQ}-retro.md</code></td></tr>
+    <tr><td>Checkpoint</td><td><code>docs/evolve/checkpoint-FB-{SEQ}.yaml</code></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> retro-action-items-tmpl.md</li>
+    <li><span class="tag tmpl">tmpl</span> ceremony-register-tmpl.yaml</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector</li>
+    <li><span class="tag hook">Post</span> post-status-publish, budget-tracker, canary-detector</li>
+    <li><span class="tag hook">Post</span> workflow-intelligence</li>
+  </ul>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /evolve-close · "Mesma disciplina, escopo menor." — Kai</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 9: BUG FIX (YOLO)                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="bug-fix">
+<h1><span class="num">9</span> Bug Fix — Resolução Autônoma (YOLO)</h1>
+<div class="subtitle">
+  <span>2 phases · 5 sub-phases por bug · E2E evidence · sempre YOLO</span>
+  <span class="tags"><span>ANY</span><span>YOLO</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Fluxo por Bug</h2>
+  <div class="flow">
+    <span class="step">P0 Discovery</span><span class="arrow">→</span>
+    <span class="step">SP1 Diagnóstico</span><span class="arrow">→</span>
+    <span class="step active">SP2 Fix (@dev)</span><span class="arrow">→</span>
+    <span class="step">SP3 QA Validate</span><span class="arrow">→</span>
+    <span class="step gate">SP4 E2E Rerun</span><span class="arrow">→</span>
+    <span class="step">SP5 Publish</span>
+  </div>
+  <p class="mini">Loop: SP4 FAIL → volta SP2 (max 3 iter). Auto-detect via regex: bug|fix|erro|falha|revert|hotfix</p>
+</div>
+
+<div class="card span2">
+  <h2><span class="n">1</span> Sub-Phases × Agents</h2>
+  <table>
+    <tr><th>Phase</th><th>Agent</th><th>Output</th></tr>
+    <tr><td>0 Discovery</td><td>—</td><td><code>list-open-bugs.cjs</code> → bugs.json</td></tr>
+    <tr><td>SP1 Diagnóstico</td><td><span class="tag agent">@dev</span></td><td>Root cause + fix plan</td></tr>
+    <tr><td>SP2 Fix</td><td><span class="tag agent">@dev</span></td><td><code>fix({id}): {desc}</code></td></tr>
+    <tr><td>SP3 QA Validate</td><td><span class="tag agent">@qa</span></td><td>E2E-CHECKED: SIM|NAO</td></tr>
+    <tr><td>SP4 E2E Rerun</td><td><span class="tag agent">@qa</span></td><td><code>e2e-evidence.cjs</code></td></tr>
+    <tr><td>SP5 Publish</td><td>—</td><td><code>publish-status.js</code></td></tr>
+  </table>
+  <div class="sep"></div>
+  <h2><span class="n">2</span> Severidade × Categoria</h2>
+  <table>
+    <tr><th>Severity</th><th>Max Iter</th><th>Categories</th></tr>
+    <tr><td><b>CRITICAL</b></td><td>1 → escalate</td><td rowspan="4">schema | migration | db<br>frontend | css | layout | ui<br>timeout | performance | lento<br>logic | integration | other</td></tr>
+    <tr><td><b>HIGH</b></td><td>2</td></tr>
+    <tr><td><b>MEDIUM</b></td><td>3</td></tr>
+    <tr><td><b>LOW</b></td><td>3</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="n red">⛔</span> Veto + Entry/Exit</h2>
+  <ul class="veto-list">
+    <li>Fix >3 arquivos (MED/LOW)</li>
+    <li>E2E FAIL após 3 iter → escalate</li>
+    <li>Fix causa regressão → rollback</li>
+    <li>CRITICAL sem fix em 1 iter → escalate</li>
+  </ul>
+  <div class="sep"></div>
+  <p><span class="badge entry">ENTRY</span> Bugs abertos (auto ou manual)</p>
+  <p><span class="badge exit">EXIT</span> Bugs fixados, E2E passing</p>
+  <p><span class="badge next">NEXT</span> Volta ao workflow chamador</p>
+  <div class="sep"></div>
+  <pre><span class="k">/bug-fix</span>       <span class="c"># todos bugs</span>
+<span class="k">/bug-fix</span> 2.1   <span class="c"># só Story 2.1</span></pre>
+  <div class="sep"></div>
+  <h2><span class="n">📦</span> Artefatos</h2>
+  <ul>
+    <li><code>data/open-bugs.json</code></li>
+    <li><code>data/e2e-evidence.json</code></li>
+    <li>Story Log entries (fix:)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📁</span> Templates + Hooks</h2>
+  <ul>
+    <li><span class="tag tmpl">tmpl</span> story-template.md (Story Log)</li>
+  </ul>
+  <div class="sep"></div>
+  <ul>
+    <li><span class="tag hook">Pre</span> authority-guard, secret-scan, injection-scan</li>
+    <li><span class="tag hook">Submit</span> context-injector</li>
+    <li><span class="tag hook">Post</span> post-edit-lint, post-bash-test-gate</li>
+    <li><span class="tag hook">Post</span> post-status-publish, budget-tracker, canary-detector</li>
+  </ul>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /bug-fix · "Impossibilitar caminhos errados." — PV</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW 10: FRONTEND REFRESH ASSESSMENT                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="frontend-refresh">
+<h1><span class="num">10</span> Frontend Refresh — Avaliação + Re-Design</h1>
+<div class="subtitle">
+  <span>11 fases · PM referências → Analyst pesquisa → Brand → Prototype → Radar 6D → Spec · v4.0</span>
+  <span class="tags"><span>DESIGN</span><span>EVOLVE</span></span>
+</div>
+
+<div class="grid">
+
+<div class="card span3">
+  <h2><span class="n">→</span> Pipeline v4.0</h2>
+  <pre>
+<span class="a">@pm</span> Referências ──→ <span class="a">@analyst</span> Objetivos + Pesquisa ──→ <span class="k">Playwright</span> Captura
+      │                        │                                │
+      ▼                        ▼                                ▼
+<span class="a">@design-chief</span> + <span class="a">/brand</span> ──→ <span class="a">@huashu</span> Prototype ──→ <span class="a">@impeccable</span> Check
+      │                                                         │
+      ▼                                                         ▼
+<span class="a">@huashu</span> Radar 6D ──→ <span class="s">PO Aprovação</span> ──→ <span class="a">@design-chief</span> Spec
+                                                    │
+                                                    ▼
+                                          <span class="a">@fal-visual</span> Assets <span class="c">(opcional)</span>
+  </pre>
+</div>
+
+<div class="card">
+  <h2><span class="n">-1</span> Referências Visuais (PM)</h2>
+  <p><span class="tag agent">@pm</span> analisa PRD → pré-seleciona 3-5 design systems → pergunta ao usuário</p>
+  <ul>
+    <li>Biblioteca local: <b>48 DESIGN.md</b> (awesome-design-md)</li>
+    <li>URLs, Pinterest, screenshots, anti-referências</li>
+    <li><code>npx getdesign@latest add {brand}</code></li>
+  </ul>
+  <p><span class="tag veto">VETO</span> Zero referências → PM sugere por segmento</p>
+</div>
+
+<div class="card">
+  <h2><span class="n">0</span> Análise + Pesquisa Visual</h2>
+  <p><span class="tag agent">@analyst</span> objetivos + personas + KPIs por página</p>
+  <ul>
+    <li>Visita sites referenciados</li>
+    <li>Pesquisa trends do segmento (WebSearch)</li>
+    <li>Analisa DESIGN.md selecionados → gap visual</li>
+  </ul>
+  <p>Output: platform-analysis + page-objectives + <b>design-research</b></p>
+</div>
+
+<div class="card">
+  <h2><span class="n">1-2</span> Captura + Brand</h2>
+  <ul>
+    <li><b>Fase 1:</b> Playwright screenshots (desktop + mobile)</li>
+    <li><b>Fase 2:</b> @design-chief + /brand → DESIGN.md</li>
+    <li>Usa referências PM como inspiração</li>
+    <li>Cenários: ambos existem | só DESIGN.md | nenhum</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n">3-3.5</span> Prototype + Impeccable</h2>
+  <ul>
+    <li><b>Fase 3:</b> @huashu → prototype HTML otimizado</li>
+    <li><b>Fase 3.5:</b> @impeccable → consistency check</li>
+    <li>Score: PASS≥80 | CONCERNS 60-79 | FAIL&lt;60</li>
+    <li>FAIL → refaz prototype (max 2 retries)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n">4-5</span> Radar 6D + Aprovação PO</h2>
+  <table>
+    <tr><th>Dimensão</th><th>Peso</th></tr>
+    <tr><td>Philosophy Alignment</td><td>10%</td></tr>
+    <tr><td>Visual Hierarchy</td><td>20%</td></tr>
+    <tr><td>Craft Quality</td><td>20%</td></tr>
+    <tr><td>Functionality</td><td>15%</td></tr>
+    <tr><td>Originality</td><td>10%</td></tr>
+    <tr><td><b>Business Alignment</b></td><td><b>25%</b></td></tr>
+  </table>
+  <p>PO: APROVADO → spec | AJUSTAR → refaz | REJEITAR → para</p>
+</div>
+
+<div class="card">
+  <h2><span class="n green">6</span> Spec Delivery (9 docs)</h2>
+  <ul>
+    <li>00: executive-summary.md</li>
+    <li>01: platform-context.md</li>
+    <li>02: brand-identity.md</li>
+    <li>03: design-tokens.yaml (Tailwind-ready)</li>
+    <li>04: page-specs/ (1 por página)</li>
+    <li>05: component-inventory.md</li>
+    <li>06: implementation-guide.md</li>
+    <li>07: radar-report.html (interativo)</li>
+    <li>08: visual-assets/ (fal.ai, opcional)</li>
+    <li>09: design-references.md</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="n purple">📊</span> Veredictos</h2>
+  <table>
+    <tr><th>Score</th><th>Veredicto</th><th>Próximo</th></tr>
+    <tr><td>≥ 7.0</td><td><b>POLISH</b></td><td>Quick-wins, 1-2 sprints</td></tr>
+    <tr><td>5.0 – 6.9</td><td><b>REFRESH</b></td><td>/evolve-briefing, 3-5 sprints</td></tr>
+    <tr><td>&lt; 5.0</td><td><b>REBUILD</b></td><td>/framing completo, 6+ sprints</td></tr>
+  </table>
+  <div class="sep"></div>
+  <h2><span class="n blue">🎨</span> Design Library</h2>
+  <p><b>48 marcas</b> em <code>knowledge/design-systems/</code></p>
+  <p>Categorias: Fintech, SaaS, Dev Tools, AI, Consumer, Auto, Design</p>
+</div>
+
+<div class="card">
+  <h2><span class="n red">🚫</span> Veto Conditions</h2>
+  <ul>
+    <li><span class="tag veto">VETO</span> Zero referências + recusa sugestões → BLOQUEIO</li>
+    <li><span class="tag veto">VETO</span> reference-summary.yaml não gerado → não inicia</li>
+    <li><span class="tag veto">VETO</span> URL não carrega → corrigir deploy</li>
+    <li><span class="tag veto">VETO</span> Impeccable FAIL após 2 retries → escalar</li>
+    <li><span class="tag veto">VETO</span> Brand contradiz platform_analysis → resolver</li>
+  </ul>
+</div>
+
+</div>
+<div class="footer-note">Synkra AIOS · /design:frontend-refresh v4.0 · "Design sem referência é opinião." — Design Chief</div>
+</section>
+
+<div style="text-align:center;padding:30px;color:#999;font-size:.7rem;">
+  Synkra AIOS Workflow Cheatsheets v2.2 — Maio 2026 — 10 Workflows · 16 Agents · 52 Hooks · 2 CronCreate · 48 Design Systems<br>
+  "Framework sem processo é brinquedo. Processo sem framework é planilha."<br>
+  <span style="color:#777">v2.2: +/design:frontend-refresh v4.0 (PM referências + Analyst pesquisa + awesome-design-md 48 marcas) · FB-AIOS-015</span>
+</div>
+
+</body>
+</html>

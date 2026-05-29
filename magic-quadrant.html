@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Quadrant — AI Coding Agent Harnesses 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e0e0e0;font-family:'Segoe UI',system-ui,sans-serif;padding:40px}
+h1{text-align:center;font-size:1.8rem;margin-bottom:6px;color:#fff;letter-spacing:-0.5px}
+h2{font-size:1.15rem;color:#4ade80;margin:40px 0 16px;border-bottom:1px solid #222;padding-bottom:8px}
+h2.amber{color:#f59e0b}
+.subtitle{text-align:center;font-size:.85rem;color:#888;margin-bottom:30px}
+.method-note{text-align:center;font-size:.7rem;color:#555;margin-top:-20px;margin-bottom:30px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.6}
+.quad-outer{display:flex;justify-content:center;gap:30px;flex-wrap:wrap}
+.quadrant-container{position:relative;width:720px;height:720px;border:1px solid #333;background:#111118;border-radius:4px;flex-shrink:0}
+.axis-x{position:absolute;bottom:-36px;left:0;right:0;text-align:center;font-size:.75rem;color:#aaa;letter-spacing:1px}
+.axis-y{position:absolute;left:-36px;top:50%;transform:translateY(-50%) rotate(-90deg);font-size:.75rem;color:#aaa;white-space:nowrap;letter-spacing:1px}
+.quadrant-label{position:absolute;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
+.ql-leaders{top:14px;right:20px;color:#4ade8066}.ql-visionaries{top:14px;left:20px;color:#a78bfa55}
+.ql-challengers{bottom:14px;right:20px;color:#f59e0b55}.ql-niche{bottom:14px;left:20px;color:#6b728055}
+.crosshair-h{position:absolute;top:50%;left:0;right:0;border-top:1px dashed #2a2a38}
+.crosshair-v{position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #2a2a38}
+.grid-line{position:absolute}
+.grid-h1{top:25%;left:0;right:0;border-top:1px solid #1a1a22}.grid-h2{top:75%;left:0;right:0;border-top:1px solid #1a1a22}
+.grid-v1{left:25%;top:0;bottom:0;border-left:1px solid #1a1a22}.grid-v2{left:75%;top:0;bottom:0;border-left:1px solid #1a1a22}
+.scale-label{position:absolute;font-size:.58rem;color:#444}
+.dot{position:absolute;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);transition:all .3s;cursor:pointer}
+.dot:hover{transform:translate(-50%,-50%) scale(1.7);z-index:10}
+.dot-label{position:absolute;font-size:.62rem;white-space:nowrap;transform:translateX(-50%);top:18px;left:50%;color:#ccc;font-weight:600;pointer-events:none}
+.dot.leader{background:#4ade80;box-shadow:0 0 12px #4ade8066}
+.dot.visionary{background:#a78bfa;box-shadow:0 0 12px #a78bfa66}
+.dot.challenger{background:#f59e0b;box-shadow:0 0 12px #f59e0b66}
+.dot.niche{background:#6b7280;box-shadow:0 0 8px #6b728044}
+.dot.star{width:22px;height:22px;background:#4ade80;box-shadow:0 0 22px #4ade80aa,0 0 44px #4ade8044;border:2px solid #fff}
+.dot.star .dot-label{font-size:.8rem;color:#4ade80;font-weight:800}
+.dot.dead{background:#ef4444;box-shadow:0 0 12px #ef444466}
+.tooltip{display:none;position:absolute;background:#1a1a2e;border:1px solid #555;padding:8px 12px;border-radius:6px;font-size:.65rem;z-index:100;white-space:pre-line;bottom:26px;left:50%;transform:translateX(-50%);pointer-events:none;max-width:300px;line-height:1.5}
+.dot:hover .tooltip{display:block}
+.tooltip strong{color:#4ade80}.tooltip .dim{color:#888;font-size:.58rem}
+.side-panel{width:280px;font-size:.8rem;color:#888;line-height:2}
+.side-panel strong{color:#bbb;font-size:.85rem;display:block;margin-bottom:4px}
+.side-panel .sep{border-top:1px solid #222;margin:12px 0}
+.radar-wrap{display:flex;justify-content:center;margin-top:10px}
+svg.radar{filter:drop-shadow(0 0 30px rgba(74,222,128,0.06))}
+.radar-label{font-size:10.5px;fill:#aaa;font-weight:600}
+.radar-label.highlight{fill:#4ade80;font-weight:800;font-size:11.5px}
+.radar-label.weak{fill:#f87171;font-weight:800}
+.radar-ring-label{font-size:8px;fill:#444}
+.rank-table{width:100%;border-collapse:collapse;font-size:.72rem;margin-top:10px}
+.rank-table th{text-align:left;padding:7px 10px;background:#111118;color:#666;font-weight:600;border-bottom:2px solid #222;font-size:.62rem;text-transform:uppercase;letter-spacing:.5px}
+.rank-table td{padding:5px 10px;border-bottom:1px solid #1a1a22}
+.rank-table tr:hover td{background:#111118}
+.rank-table tr.clickable{cursor:pointer}.rank-table tr.clickable:hover td{background:#1a1a2e}
+.rank-table .cat{font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:3px}
+.cat-l{background:#064e3b;color:#4ade80}.cat-c{background:#78350f;color:#fcd34d}
+.cat-v{background:#2e1065;color:#c4b5fd}
+.cat-n{background:#1c1917;color:#888}.cat-d{background:#7f1d1d;color:#fca5a5}
+.sc{font-weight:800;font-size:.85rem;text-align:center;width:44px}
+.ev{font-size:.65rem;color:#666;max-width:260px}.gp{font-size:.65rem;color:#f87171;max-width:200px}
+#detail-panel{display:none;background:#111118;border:1px solid #333;border-radius:8px;padding:20px;margin-top:16px}
+#detail-panel.visible{display:block}
+#detail-panel h3{color:#4ade80;margin-bottom:12px;font-size:1rem}
+#detail-panel .close-btn{float:right;cursor:pointer;color:#666;font-size:1.2rem;padding:0 8px}
+#detail-panel .close-btn:hover{color:#fff}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:4px;background:#0a0a0f}
+.detail-row .theme-name{font-size:.75rem;color:#ccc;flex:1}
+.detail-row .theme-score{font-size:.85rem;font-weight:800;width:36px;text-align:center}
+.detail-row .theme-bar{width:80px;height:6px;background:#1a1a22;border-radius:3px;margin:0 8px}
+.detail-row .theme-bar-fill{height:100%;border-radius:3px}
+.s5{color:#22c55e}.s4{color:#4ade80}.s3{color:#fbbf24}.s2{color:#f97316}.s1{color:#ef4444}
+.b5{background:#22c55e}.b4{background:#4ade80}.b3{background:#fbbf24}.b2{background:#f97316}.b1{background:#ef4444}
+.gap-card{background:#111118;border:1px solid #222;border-radius:8px;padding:14px 16px;margin-bottom:10px}
+.gap-card.critical{border-left:3px solid #ef4444}.gap-card.warning{border-left:3px solid #f59e0b}
+.gap-card h3{font-size:.85rem;color:#fff;margin-bottom:4px}
+.gap-card p{font-size:.75rem;color:#999;line-height:1.5}
+.gtag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.6rem;font-weight:700;margin-right:4px}
+.gtag.red{background:#7f1d1d;color:#fca5a5}.gtag.amber{background:#78350f;color:#fcd34d}
+.legend{display:flex;justify-content:center;gap:22px;margin-top:55px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:.7rem;color:#888}
+.legend-dot{width:11px;height:11px;border-radius:50%}
+.footer{text-align:center;margin-top:40px;font-size:.6rem;color:#444;line-height:1.8}
+.delta{font-size:.55rem;margin-left:4px;font-weight:700}
+.delta.up{color:#4ade80}.delta.down{color:#ef4444}.delta.new-entry{color:#a78bfa}
+@media(max-width:1100px){.quad-outer{flex-direction:column;align-items:center}.side-panel{width:100%}.detail-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1>Magic Quadrant — AI Coding Agent Harnesses 2026</h1>
+<p class="subtitle">AIOS Maturity Assessment Squad · Ladder v3 — 10 temas × 5 níveis · 21 sistemas · Abril 2026 (v3 — Scout Audit)</p>
+<p class="method-note">Avaliação por <strong>maturidade de harness</strong> (workflows, gates, orchestration, ceremonies, safety) — NÃO por capacidade de codificação. Evidence-based: repos, docs, benchmarks publicados, auditorias independentes.</p>
+
+<div class="quad-outer">
+<div class="quadrant-container">
+  <div class="crosshair-h"></div><div class="crosshair-v"></div>
+  <div class="grid-line grid-h1"></div><div class="grid-line grid-h2"></div>
+  <div class="grid-line grid-v1"></div><div class="grid-line grid-v2"></div>
+  <span class="quadrant-label ql-leaders">LÍDERES</span>
+  <span class="quadrant-label ql-visionaries">VISIONÁRIOS</span>
+  <span class="quadrant-label ql-challengers">CHALLENGERS</span>
+  <span class="quadrant-label ql-niche">NICHE PLAYERS</span>
+  <span class="scale-label" style="bottom:-18px;left:0;">2.0</span>
+  <span class="scale-label" style="bottom:-18px;left:25%;">2.75</span>
+  <span class="scale-label" style="bottom:-18px;left:50%;">3.5</span>
+  <span class="scale-label" style="bottom:-18px;left:75%;">4.25</span>
+  <span class="scale-label" style="bottom:-18px;right:0;">5.0</span>
+  <span class="scale-label" style="left:-20px;bottom:0;">2.0</span>
+  <span class="scale-label" style="left:-20px;bottom:25%;">2.75</span>
+  <span class="scale-label" style="left:-20px;bottom:50%;">3.5</span>
+  <span class="scale-label" style="left:-20px;bottom:75%;">4.25</span>
+  <span class="scale-label" style="left:-20px;top:0;">5.0</span>
+
+  <!-- LEADERS (7) -->
+  <div class="dot star leader" style="left:88.3%;bottom:76.7%"><span class="dot-label">AIOS</span><span class="tooltip"><strong>Synkra AIOS</strong>
+Exec 4.65 · Vision 4.30 · Avg 4.48
+19 squads · 14 agents · 9 workflows
+228 tasks · 52 hooks · 2 CronCreate · 13 vetos
+QA 2-stage · Framing v3 · 12 injection patterns · 3 canary tokens · budget per-agent
+<span class="dim">Gap: learned-patterns vazio (Wave 3 — Mai/2026)</span></span></div>
+
+  <div class="dot leader" style="left:83.3%;bottom:73.3%;border:2px solid #f97316;box-shadow:0 0 14px #f9731666"><span class="dot-label" style="color:#f97316;font-weight:800">AIOX</span><span class="tooltip"><strong style="color:#f97316">AIOX (aiox-core) v5.0.7</strong>
+Exec 4.50 · Vision 4.20 · Avg 4.33
+Synapse 8-layer · 12 agents · Constitution 6 art.
+Meta-Agent MVP · Privacy telemetry · 6-IDE sync
+<span class="dim">Core OSS do AIOS · 2.8k★ · Menor comunidade</span></span></div>
+
+  <div class="dot leader" style="left:66.7%;bottom:63.3%"><span class="dot-label">GStack</span><span class="tooltip"><strong>GStack (Garry Tan) v1.3</strong>
+Exec 4.00 · Vision 3.90 · Avg 3.95 · 82k★
+ML injection defense (94.8% acc) · Canary tokens
+GBrain · /careful /freeze /guard · 23 skills
+<span class="dim">Sem cron · Sem SDLC ceremonies</span></span></div>
+
+  <div class="dot leader" style="left:60%;bottom:70%"><span class="dot-label">Hermes</span><span class="tooltip"><strong>Hermes (NousResearch) v0.11</strong>
+Exec 3.80 · Vision 4.10 · Avg 3.95 · 114k★
+Skills auto-gerados · Cron nativo · React/Ink TUI
+FTS5 memory · 17 platforms · /steer mid-run
+<span class="dim">Sem QA gates (2.5) · Sem workflows SDLC</span></span></div>
+
+  <div class="dot leader" style="left:63.3%;bottom:61.7%"><span class="dot-label">Codex CLI</span><span class="tooltip"><strong>Codex CLI (OpenAI) v0.118</strong>
+Exec 3.90 · Vision 3.85 · Avg 3.88 · 75.6k★
+Seatbelt sandbox · Memories · Guardian subagent
+MCP parallel · GPT-5.5 · ~1 release/dia
+<span class="dim">Session instability · Sem QA gates formais</span></span></div>
+
+  <div class="dot leader" style="left:63.3%;bottom:56.7%"><span class="dot-label">GSD</span><span class="tooltip"><strong>GSD v2.68</strong>
+Exec 3.90 · Vision 3.70 · Avg 3.80 · 54k★
+Thin orchestrator · Crash recovery WAL
+Milestone→Slice→Task · Phase Loop
+<span class="dim">Sem QA gates formais · Sem ceremonies</span></span></div>
+
+  <div class="dot leader" style="left:51.7%;bottom:53.3%"><span class="dot-label">Devin</span><span class="tooltip"><strong>Devin 2.2 (Cognition)</strong>
+Exec 3.55 · Vision 3.60 · Avg 3.58
+Managed Devins parallel · Playbooks · Scheduling
+Knowledge management · PR Resuming · SOC2
+<span class="dim">Fechado · Harness não extensível (2.5)</span></span></div>
+
+  <!-- VISIONARY (1) -->
+  <div class="dot visionary" style="left:46.7%;bottom:56.7%"><span class="dot-label">ECC</span><span class="tooltip"><strong>Everything Claude Code v1.10</strong>
+Exec 3.40 · Vision 3.70 · Avg 3.55 · 140k★
+AgentShield 1282 tests · 38 agents · Instinct learning
+ECC 2.0 Rust alpha · Cross-platform 5 IDEs
+<span class="dim">Sem crash recovery · Sem SDLC workflows</span></span></div>
+
+  <!-- CHALLENGERS (5) -->
+  <div class="dot challenger" style="left:57.0%;bottom:42.5%"><span class="dot-label">BMAD</span><span class="tooltip"><strong>BMAD Method v6</strong>
+Exec 3.75 · Vision 3.25 · Avg 3.50 · 43k★
+34+ workflows · Edge Case Hunter · TEA module
+12 agent personas · Scale-adaptive · BMad Builder
+<span class="dim">Token consumption 67-86% · Sem memory</span></span></div>
+
+  <div class="dot challenger" style="left:60%;bottom:43.3%"><span class="dot-label">Windsurf</span><span class="tooltip"><strong>Windsurf 2.0 (Cascade)</strong>
+Exec 3.80 · Vision 3.30 · Avg 3.55 · $82M ARR
+Best Flow awareness · Persistent Memory
+Agent Command Center · Devin Cloud · FedRAMP
+<span class="dim">Fechado · Sem QA gates · Sem sandbox</span></span></div>
+
+  <div class="dot challenger" style="left:59.5%;bottom:40.8%"><span class="dot-label">Cursor 3</span><span class="tooltip"><strong>Cursor 3.0</strong>
+Exec 3.75 · Vision 3.25 · Avg 3.50 · $29B
+Automations cron · BugBot 80% fix · /best-of-n
+Agent Tabs · Background cloud VMs · Sandbox
+<span class="dim">Fechado · Sem SDLC workflows · Memory fraco</span></span></div>
+
+  <div class="dot challenger" style="left:51.7%;bottom:41.7%"><span class="dot-label">OpenHands</span><span class="tooltip"><strong>OpenHands v1.6</strong>
+Exec 3.55 · Vision 3.25 · Avg 3.40 · 71k★
+Event-sourced replay · K8s RBAC · Agent SDK
+490+ contributors · MLSys paper · Vuln Fixer
+<span class="dim">Sem memory cross-session · Sem workflows</span></span></div>
+
+  <div class="dot challenger" style="left:55%;bottom:20%"><span class="dot-label">Replit</span><span class="tooltip"><strong>Replit Agent 4</strong>
+Exec 3.65 · Vision 2.60 · Avg 3.13 · $9B
+Parallel task forking · Snapshot engine
+Security Agent · MCP scanner · Session stitching
+<span class="dim">Fechado · Sem cron/hooks · Sem harness</span></span></div>
+
+  <!-- NICHE PLAYERS (8) -->
+  <div class="dot niche" style="left:48.3%;bottom:50%"><span class="dot-label">Copilot</span><span class="tooltip"><strong>GitHub Copilot</strong>
+Exec 3.45 · Vision 3.50 · Avg 3.48
+Cross-agent memory · Azure MCP (230 tools)
+Coding Agent cloud · .agent.md custom agents
+<span class="dim">Single-agent · Sem crash recovery</span></span></div>
+
+  <div class="dot niche" style="left:45%;bottom:48.3%"><span class="dot-label">Gemini CA</span><span class="tooltip"><strong>Gemini CLI v0.26+</strong>
+Exec 3.35 · Vision 3.45 · Avg 3.40 · 96k★
+Auto Memory (session mining) · Hooks API
+Conductor · Chapter-based flow · Agent Skills
+<span class="dim">Sem QA gates · Sem orchestration</span></span></div>
+
+  <div class="dot niche" style="left:50%;bottom:41.7%"><span class="dot-label">Amazon Q</span><span class="tooltip"><strong>Amazon Q / Kiro CLI</strong>
+Exec 3.50 · Vision 3.25 · Avg 3.38
+CAO orchestrator · Kiro Hooks · OWASP scan
+Code review + test gen agents · AWS integration
+<span class="dim">AWS lock-in · Kiro fechou OSS</span></span></div>
+
+  <div class="dot niche" style="left:48.3%;bottom:23.3%"><span class="dot-label">Superpowers</span><span class="tooltip"><strong>Superpowers v5</strong>
+Exec 3.45 · Vision 2.70 · Avg 3.08 · 121k★
+TDD enforced · 7-phase workflow · 14 skills
+Subagent dev · Multi-platform (5 IDEs)
+<span class="dim">Sem memory · Sem cron · Host-dependent</span></span></div>
+
+  <div class="dot niche" style="left:21.7%;bottom:15%"><span class="dot-label">Aider</span><span class="tooltip"><strong>Aider v0.86+</strong>
+Exec 2.65 · Vision 2.45 · Avg 2.55 · 44k★
+Tree-sitter PageRank · 100+ models · Git-native
+HTTP hooks · MCP · Agentic TDD
+<span class="dim">Single agent · Sem memory · Minimalist</span></span></div>
+
+  <div class="dot niche" style="left:0%;bottom:6.7%"><span class="dot-label">SWE-agent</span><span class="tooltip"><strong>SWE-agent / mini v2</strong>
+Exec 1.95 · Vision 2.20 · Avg 2.08 · 19k★
+ACI interface · SWE-bench SOTA · Container sandbox
+Mini-swe-agent v2 (100 lines) · Research-first
+<span class="dim">Stateless · Single agent · Research-only</span></span></div>
+
+  <div class="dot niche" style="left:0%;bottom:0%"><span class="dot-label" style="left:120%;transform:none">Bolt.new</span><span class="tooltip"><strong>Bolt.new V2</strong>
+Exec 1.90 · Vision 1.95 · Avg 1.93 · 16k★
+WebContainer · Plan mode · MCP support
+One-click deploy · Opus 4.6 support
+<span class="dim">Scaffolder, não harness · Zero gates/memory</span></span></div>
+
+  <div class="dot dead" style="left:0%;bottom:0%;margin-left:15px"><span class="dot-label" style="left:120%;transform:none;top:2px">Ruflo ⚠</span><span class="tooltip"><strong style="color:#ef4444">Ruflo ⚠ AUDITADO</strong>
+Exec 1.95 · Vision 1.70 · Avg 1.83 · 33k★
+ALERTA: Auditoria independente revelou:
+• 290/314 MCP tools são JSON stubs sem backend
+• Script malicioso no preinstall (v3.1-3.5.2)
+• Prompt injection em tool descriptions
+• ~1800 types 'any' · CI non-blocking
+<span class="dim">TRUST DEFICIT · Safety 0.75 · Evitar</span></span></div>
+
+  <div class="axis-x">EXECUTION →</div>
+  <div class="axis-y">VISION →</div>
+</div>
+
+<div class="side-panel">
+  <strong style="color:#4ade80">● Líderes (7)</strong>
+  AIOS · AIOX · GStack · Hermes · Codex CLI · GSD · Devin
+  <div class="sep"></div>
+  <strong style="color:#a78bfa">● Visionários (1)</strong>
+  ECC
+  <div class="sep"></div>
+  <strong style="color:#f59e0b">● Challengers (5)</strong>
+  BMAD · Windsurf · Cursor 3 · OpenHands · Replit
+  <div class="sep"></div>
+  <strong style="color:#6b7280">● Niche Players (8)</strong>
+  Copilot · Gemini CA · Amazon Q · Superpowers · Aider · SWE-agent · Bolt.new · <span style="color:#ef4444">Ruflo ⚠</span>
+  <div class="sep"></div>
+  <div style="font-size:.65rem;line-height:1.6;color:#555;">
+    <strong style="color:#888;font-size:.7rem;">Critérios</strong><br>
+    Exec > 3.5 AND Vision > 3.5 = Líder<br>
+    Exec ≤ 3.5 AND Vision > 3.5 = Visionário<br>
+    Exec > 3.5 AND Vision ≤ 3.5 = Challenger<br>
+    Ambos ≤ 3.5 = Niche<br><br>
+    <strong style="color:#888;font-size:.7rem;">Exec (5 temas)</strong><br>
+    Context · Orchestration · Gates · MCP · Continuity<br><br>
+    <strong style="color:#888;font-size:.7rem;">Vision (5 temas)</strong><br>
+    Memory · Automation · Workflows · Safety · Harness
+  </div>
+</div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#4ade80;border:2px solid #fff"></div>AIOS (4.48)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Líder</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Visionário</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Challenger</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6b7280"></div>Niche</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Auditado ⚠</div>
+</div>
+
+<!-- RANKING TABLE -->
+<h2>Ranking Completo — 21 Sistemas (clique para ver scores detalhados)</h2>
+
+<table class="rank-table" id="ranking">
+<thead>
+  <tr><th>#</th><th>Sistema</th><th style="text-align:center">Exec</th><th style="text-align:center">Vision</th><th style="text-align:center">Avg</th><th>Cat.</th><th>Forças (Harness)</th><th>Fraquezas (Harness)</th></tr>
+</thead>
+<tbody>
+  <tr class="clickable" onclick="showDetail('aios')"><td>1</td><td><strong style="color:#4ade80">AIOS</strong></td><td class="sc" style="color:#4ade80">4.65</td><td class="sc" style="color:#4ade80">4.30</td><td class="sc" style="color:#4ade80">4.48</td><td><span class="cat cat-l">Líder</span></td><td class="ev">9 workflows · 228 tasks · 52 hooks · QA 2-stage · Framing v3 10-phase · 12 injection patterns · 3 canary tokens · 2 CronCreate · 197 generators</td><td class="gp">learned-patterns vazio (Wave 3 Mai/26)</td></tr>
+  <tr class="clickable" onclick="showDetail('aiox')" style="background:#1a150f"><td>2</td><td><strong style="color:#f97316">AIOX</strong> <span class="delta up">↑</span></td><td class="sc" style="color:#f97316">4.50</td><td class="sc" style="color:#f97316">4.20</td><td class="sc" style="color:#f97316">4.33</td><td><span class="cat cat-l">Líder</span></td><td class="ev">Synapse 8-layer · 12 agents · Constitution 6 art. · Meta-Agent MVP v5.0.7 · 6-IDE sync</td><td class="gp">Comunidade pequena (2.8k★) · Sequential orch</td></tr>
+  <tr class="clickable" onclick="showDetail('gstack')"><td>3</td><td><strong>GStack</strong> <span class="delta up">↑13</span></td><td class="sc">4.00</td><td class="sc">3.90</td><td class="sc">3.95</td><td><span class="cat cat-l">Líder</span></td><td class="ev">ML injection defense 94.8% · Canary tokens · GBrain · /careful /freeze /guard · 23 skills · 82k★</td><td class="gp">Sem cron · Sem SDLC ceremonies · Sem workflows formais</td></tr>
+  <tr class="clickable" onclick="showDetail('hermes')"><td>3</td><td><strong>Hermes</strong> <span class="delta up">↑11</span></td><td class="sc">3.80</td><td class="sc">4.10</td><td class="sc">3.95</td><td><span class="cat cat-l">Líder</span></td><td class="ev">Skills auto-gerados · Cron nativo · FTS5 memory · 17 platforms · /steer mid-run · 114k★</td><td class="gp">Sem QA gates (2.5) · Sem workflows SDLC · Projeto jovem</td></tr>
+  <tr class="clickable" onclick="showDetail('codex')"><td>5</td><td><strong>Codex CLI</strong> <span class="delta up">↑5</span></td><td class="sc">3.90</td><td class="sc">3.85</td><td class="sc">3.88</td><td><span class="cat cat-l">Líder</span></td><td class="ev">Seatbelt sandbox · Memories · Guardian subagent · MCP parallel · GPT-5.5 · Rust OSS · 75.6k★</td><td class="gp">Session instability (websocket) · Sem QA gates · Sem cron</td></tr>
+  <tr class="clickable" onclick="showDetail('gsd')"><td>6</td><td><strong>GSD</strong> <span class="delta down">↓4</span></td><td class="sc">3.90</td><td class="sc">3.70</td><td class="sc">3.80</td><td><span class="cat cat-l">Líder</span></td><td class="ev">Thin orchestrator · Crash recovery WAL · Milestone→Slice→Task · Phase Loop · 54k★</td><td class="gp">Sem QA gates formais · Sem ceremonies · Host-dependent scheduling</td></tr>
+  <tr class="clickable" onclick="showDetail('devin')"><td>7</td><td><strong>Devin</strong> <span class="delta up">↑1</span></td><td class="sc">3.55</td><td class="sc">3.60</td><td class="sc">3.58</td><td><span class="cat cat-l">Líder</span></td><td class="ev">Managed Devins parallel · Playbooks · Scheduling · Knowledge mgmt · PR Resuming · SOC2</td><td class="gp">Fechado · Harness não extensível (2.5) · Caro em escala</td></tr>
+  <tr class="clickable" onclick="showDetail('ecc')"><td>8</td><td><strong>ECC</strong> <span class="delta down">↓2</span></td><td class="sc">3.40</td><td class="sc">3.70</td><td class="sc">3.55</td><td><span class="cat cat-v">Visionário</span></td><td class="ev">AgentShield 1282 tests · 38 agents · Instinct learning · ECC 2.0 Rust alpha · 140k★</td><td class="gp">Sem crash recovery · Sem SDLC workflows · Host-dependent orch</td></tr>
+  <tr class="clickable" onclick="showDetail('windsurf')"><td>9</td><td><strong>Windsurf</strong> <span class="delta up">↑2</span></td><td class="sc">3.80</td><td class="sc">3.30</td><td class="sc">3.55</td><td><span class="cat cat-c">Challenger</span></td><td class="ev">Best Flow awareness · Persistent Memory · Agent Command Center · Devin Cloud · FedRAMP · $82M ARR</td><td class="gp">Fechado · Sem QA gates · Sem sandbox · Sem cron</td></tr>
+  <tr class="clickable" onclick="showDetail('bmad')"><td>10</td><td><strong>BMAD</strong> <span class="delta down">↓1</span></td><td class="sc">3.75</td><td class="sc">3.25</td><td class="sc">3.50</td><td><span class="cat cat-c">Challenger</span></td><td class="ev">34+ workflows SDLC · Edge Case Hunter · TEA 9 test workflows · 12 agents · BMad Builder · 43k★</td><td class="gp">Token consumption 67-86% · Sem memory cross-session</td></tr>
+  <tr class="clickable" onclick="showDetail('cursor')"><td>10</td><td><strong>Cursor 3</strong> <span class="delta down">↓7</span></td><td class="sc">3.75</td><td class="sc">3.25</td><td class="sc">3.50</td><td><span class="cat cat-c">Challenger</span></td><td class="ev">Automations cron · BugBot 80% fix · /best-of-n · Agent Tabs · Background VMs · Sandbox</td><td class="gp">Fechado · Sem SDLC workflows · Memory fraco · CVEs conhecidos</td></tr>
+  <tr class="clickable" onclick="showDetail('copilot')"><td>12</td><td><strong>Copilot</strong> <span class="delta down">↓7</span></td><td class="sc">3.45</td><td class="sc">3.50</td><td class="sc">3.48</td><td><span class="cat cat-n">Niche</span></td><td class="ev">Cross-agent memory · Azure MCP 230 tools · Coding Agent cloud · .agent.md custom agents</td><td class="gp">Single-agent · Sem crash recovery · Issue-to-PR único workflow</td></tr>
+  <tr class="clickable" onclick="showDetail('openhands')"><td>13</td><td><strong>OpenHands</strong></td><td class="sc">3.55</td><td class="sc">3.25</td><td class="sc">3.40</td><td><span class="cat cat-c">Challenger</span></td><td class="ev">Event-sourced replay · K8s RBAC · Agent SDK · 490+ contribs · MLSys paper · 71k★</td><td class="gp">Sem memory cross-session · Sem workflows · Single-agent</td></tr>
+  <tr class="clickable" onclick="showDetail('gemini')"><td>14</td><td><strong>Gemini CA</strong> <span class="delta up">↑3</span></td><td class="sc">3.35</td><td class="sc">3.45</td><td class="sc">3.40</td><td><span class="cat cat-n">Niche</span></td><td class="ev">Auto Memory (session mining) · Hooks API matchers · Conductor · Chapter-based · 96k★</td><td class="gp">Sem QA gates · Sem orchestration multi-agent · Google-centric</td></tr>
+  <tr class="clickable" onclick="showDetail('amazonq')"><td>15</td><td><strong>Amazon Q</strong> <span class="delta up">↑2</span></td><td class="sc">3.50</td><td class="sc">3.25</td><td class="sc">3.38</td><td><span class="cat cat-n">Niche</span></td><td class="ev">CAO orchestrator · Kiro Hooks event-driven · OWASP scan · Code review + test gen agents</td><td class="gp">AWS lock-in · Kiro fechou OSS · Memory fraco</td></tr>
+  <tr class="clickable" onclick="showDetail('replit')"><td>16</td><td><strong>Replit</strong> <span class="delta up">↑3</span></td><td class="sc">3.65</td><td class="sc">2.60</td><td class="sc">3.13</td><td><span class="cat cat-c">Challenger</span></td><td class="ev">Agent 4 parallel forking · Snapshot engine · Security Agent · MCP scanner · $9B · Session stitching</td><td class="gp">Fechado · Sem cron/hooks · Sem harness extensível</td></tr>
+  <tr class="clickable" onclick="showDetail('superpowers')"><td>17</td><td><strong>Superpowers</strong> <span class="delta down">↓5</span></td><td class="sc">3.45</td><td class="sc">2.70</td><td class="sc">3.08</td><td><span class="cat cat-n">Niche</span></td><td class="ev">TDD enforced · 7-phase workflow · 14 skills · Multi-platform · 121k★ marketplace</td><td class="gp">Sem memory · Sem cron · Host-dependent · Sem safety</td></tr>
+  <tr class="clickable" onclick="showDetail('aider')"><td>18</td><td><strong>Aider</strong> <span class="delta up">↑2</span></td><td class="sc">2.65</td><td class="sc">2.45</td><td class="sc">2.55</td><td><span class="cat cat-n">Niche</span></td><td class="ev">Tree-sitter PageRank · 100+ models · Git-native · HTTP hooks · MCP · Agentic TDD · 44k★</td><td class="gp">Single agent · Sem memory · Minimalist by design</td></tr>
+  <tr class="clickable" onclick="showDetail('sweagent')"><td>19</td><td><strong>SWE-agent</strong></td><td class="sc">1.95</td><td class="sc">2.20</td><td class="sc">2.08</td><td><span class="cat cat-n">Niche</span></td><td class="ev">ACI interface · SWE-bench SOTA · Container sandbox · mini-swe-agent v2 · 19k★</td><td class="gp">Stateless · Single agent · Research-only · Stale (v1.1 May 2025)</td></tr>
+  <tr class="clickable" onclick="showDetail('bolt')"><td>20</td><td><strong>Bolt.new</strong> <span class="delta up">↑1</span></td><td class="sc">1.90</td><td class="sc">1.95</td><td class="sc">1.93</td><td><span class="cat cat-n">Niche</span></td><td class="ev">WebContainer · Plan mode · MCP support · One-click deploy · 16k★</td><td class="gp">Scaffolder, não harness · Zero gates/memory</td></tr>
+  <tr class="clickable" onclick="showDetail('ruflo')" style="background:#1a0f0f"><td>21</td><td><strong style="color:#ef4444">Ruflo ⚠</strong> <span class="delta down">↓14</span></td><td class="sc" style="color:#ef4444">1.95</td><td class="sc" style="color:#ef4444">1.70</td><td class="sc" style="color:#ef4444">1.83</td><td><span class="cat cat-d">Auditado</span></td><td class="ev">Conceito swarm ambicioso · SONA routing</td><td class="gp">99% MCP stubs · Supply chain incident · Prompt injection · Safety 0.75 · Trust deficit</td></tr>
+</tbody>
+</table>
+
+<!-- DETAIL PANEL -->
+<div id="detail-panel">
+  <span class="close-btn" onclick="hideDetail()">✕</span>
+  <h3 id="detail-title"></h3>
+  <div class="detail-grid" id="detail-grid"></div>
+</div>
+
+<!-- RADAR AIOS vs AIOX -->
+<h2>Radar — AIOS vs AIOX (10 Temas)</h2>
+<div class="radar-wrap">
+<svg class="radar" width="700" height="600" viewBox="-350 -290 700 600">
+  <defs><radialGradient id="rg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4ade80" stop-opacity="0.15"/><stop offset="100%" stop-color="#4ade80" stop-opacity="0.03"/></radialGradient></defs>
+  <circle cx="0" cy="0" r="220" fill="none" stroke="#1a1a22" stroke-width="0.5"/>
+  <circle cx="0" cy="0" r="176" fill="none" stroke="#1a1a22" stroke-width="0.5"/>
+  <circle cx="0" cy="0" r="132" fill="none" stroke="#1a1a22" stroke-width="0.5"/>
+  <circle cx="0" cy="0" r="88" fill="none" stroke="#1a1a22" stroke-width="0.5"/>
+  <circle cx="0" cy="0" r="44" fill="none" stroke="#1a1a22" stroke-width="0.5"/>
+  <text x="4" y="-222" class="radar-ring-label">N5</text>
+  <text x="4" y="-178" class="radar-ring-label">N4</text>
+  <text x="4" y="-134" class="radar-ring-label">N3</text>
+  <text x="4" y="-90" class="radar-ring-label">N2</text>
+  <text x="4" y="-46" class="radar-ring-label">N1</text>
+  <g stroke="#1a1a22" stroke-width="0.5">
+    <line x1="0" y1="0" x2="0" y2="-230"/><line x1="0" y1="0" x2="135.2" y2="-186.1"/>
+    <line x1="0" y1="0" x2="218.8" y2="-71.1"/><line x1="0" y1="0" x2="218.8" y2="71.1"/>
+    <line x1="0" y1="0" x2="135.2" y2="186.1"/><line x1="0" y1="0" x2="0" y2="230"/>
+    <line x1="0" y1="0" x2="-135.2" y2="186.1"/><line x1="0" y1="0" x2="-218.8" y2="71.1"/>
+    <line x1="0" y1="0" x2="-218.8" y2="-71.1"/><line x1="0" y1="0" x2="-135.2" y2="-186.1"/>
+  </g>
+  <!-- AIOX (dashed orange) -->
+  <polygon fill="none" stroke="#f97316" stroke-width="1.8" stroke-dasharray="5,4" opacity="0.55"
+    points="0,-209  103.5,-142.4  188.3,-61.2  167.4,54.4  122.9,169.1  0,198  -122.9,169.1  -167.4,54.4  -177.9,-57.8  -122.9,-169.1"/>
+  <!-- AIOS (solid green) -->
+  <polygon fill="url(#rg)" stroke="#4ade80" stroke-width="2.5" opacity="0.85"
+    points="0,-209  122.9,-169.1  188.3,-61.2  177.9,57.8  129.3,178.0  0,198  -122.9,169.1  -188.3,61.2  -188.3,-61.2  -109.9,-151.3"/>
+  <!-- AIOS dots -->
+  <circle cx="0" cy="-209" r="5" fill="#22c55e" stroke="#fff" stroke-width="2"/>
+  <circle cx="122.9" cy="-169.1" r="5" fill="#22c55e" stroke="#fff" stroke-width="2"/>
+  <circle cx="188.3" cy="-61.2" r="5" fill="#4ade80" stroke="#0a0a0f" stroke-width="2"/>
+  <circle cx="156.9" cy="51.0" r="5" fill="#fbbf24" stroke="#0a0a0f" stroke-width="2"/>
+  <circle cx="129.3" cy="178.0" r="5" fill="#22c55e" stroke="#fff" stroke-width="2"/>
+  <circle cx="0" cy="198" r="5" fill="#4ade80" stroke="#0a0a0f" stroke-width="2"/>
+  <circle cx="-122.9" cy="169.1" r="5" fill="#22c55e" stroke="#fff" stroke-width="2"/>
+  <circle cx="-188.3" cy="61.2" r="5" fill="#4ade80" stroke="#0a0a0f" stroke-width="2"/>
+  <circle cx="-177.9" cy="-57.8" r="5" fill="#4ade80" stroke="#0a0a0f" stroke-width="2"/>
+  <circle cx="-109.9" cy="-151.3" r="5" fill="#4ade80" stroke="#0a0a0f" stroke-width="2"/>
+  <!-- Labels -->
+  <text x="0" y="-255" text-anchor="middle" class="radar-label highlight">Context (4.75)</text>
+  <text x="155" y="-196" text-anchor="start" class="radar-label highlight">Memory (4.75)</text>
+  <text x="244" y="-74" text-anchor="start" class="radar-label highlight">Orchestration (4.5)</text>
+  <text x="244" y="82" text-anchor="start" class="radar-label highlight">Automation (4.25)</text>
+  <text x="155" y="216" text-anchor="start" class="radar-label highlight">Gates (5.0)</text>
+  <text x="0" y="270" text-anchor="middle" class="radar-label highlight">MCP (4.5)</text>
+  <text x="-155" y="216" text-anchor="end" class="radar-label highlight">Workflows (4.75)</text>
+  <text x="-244" y="82" text-anchor="end" class="radar-label highlight">Continuity (4.5)</text>
+  <text x="-244" y="-74" text-anchor="end" class="radar-label highlight">Safety (4.50)</text>
+  <text x="-155" y="-196" text-anchor="end" class="radar-label highlight">Harness (4.25)</text>
+  <g transform="translate(130,230)">
+    <line x1="0" y1="0" x2="25" y2="0" stroke="#4ade80" stroke-width="2.5"/>
+    <text x="30" y="4" font-size="9" fill="#4ade80" font-weight="700">AIOS (4.48)</text>
+    <line x1="0" y1="16" x2="25" y2="16" stroke="#f97316" stroke-width="1.8" stroke-dasharray="5,4" opacity="0.6"/>
+    <text x="30" y="20" font-size="9" fill="#f97316" font-weight="600" opacity="0.7">AIOX (4.33)</text>
+  </g>
+</svg>
+</div>
+
+<!-- GAPS -->
+<h2 class="amber">Top 3 Gaps AIOS</h2>
+<div class="gap-card warning">
+  <h3><span class="gtag amber">WARNING</span> Harness Engineering — N4.25 (feedback loop aberto)</h3>
+  <p>197 generators, auto-eval 4 checks — mas sem closed-loop de production metrics. <code>learned-patterns.json</code> vazio. Hermes auto-gera skills (4.50). Wave 3 (session mining, Mai/2026) endereça. FB-AIOS-015 já rascunhado.</p>
+</div>
+<div class="gap-card warning">
+  <h3><span class="gtag amber">WARNING</span> Automation & Scheduling — N4.25 (CronCreate session-scoped)</h3>
+  <p>52 hooks, 13/13 events, 2 CronCreate deployed (PR Triage + Stale Branch) — mas CronCreate é <strong>session-scoped</strong> (expira, requer recriação manual). Hermes tem cron built-in durable (4.75). Cursor tem Automations cron persistente (4.25). Gap: durable scheduling.</p>
+</div>
+<div class="gap-card warning">
+  <h3><span class="gtag amber">WARNING</span> Safety & Guardrails — N4.50 (audit-only, sem ML)</h3>
+  <p>12 injection regex patterns (PreToolUse), 3 canary tokens (PostToolUse), budget per-agent 150K cap — mas tudo em <strong>audit-only</strong> (não bloqueia). GStack tem ML classifier 94.8% blocking (5.0). Codex CLI tem Seatbelt sandbox OS-level (4.75). Gap: modo blocking + ML defense.</p>
+</div>
+
+<!-- MOVERS -->
+<h2 style="color:#a78bfa">Maiores Movimentações (v1 → v2)</h2>
+<div class="gap-card" style="border-left:3px solid #4ade80">
+  <h3><span class="gtag" style="background:#064e3b;color:#4ade80">↑13</span> GStack — Niche → Líder (2.95 → 3.95)</h3>
+  <p>v1.3 com ML injection defense (94.8%), GBrain memory, 82k★. Safety 5.0 é único no mercado.</p>
+</div>
+<div class="gap-card" style="border-left:3px solid #4ade80">
+  <h3><span class="gtag" style="background:#064e3b;color:#4ade80">↑11</span> Hermes — Niche → Líder (3.10 → 3.95)</h3>
+  <p>v0.11 com React/Ink TUI, cron nativo, skills auto-gerados, 114k★. Competidor direto do AIOS em automation.</p>
+</div>
+<div class="gap-card" style="border-left:3px solid #ef4444">
+  <h3><span class="gtag red">↓14</span> Ruflo — Challenger → Auditado (3.55 → 1.83)</h3>
+  <p>Auditoria independente: 99% MCP stubs, supply chain malware (v3.1-3.5.2), prompt injection. Stars inflados vs funcionalidade real.</p>
+</div>
+
+<p class="footer">
+  🧠 Claude Code Scout · Maturity Assessment Squad · Ladder v3 — 10 temas × 5 níveis · 21 sistemas<br>
+  Pesquisa: WebSearch Abril 2026 · Fontes: GitHub repos, docs oficiais, benchmarks, auditorias independentes, release notes<br>
+  <em>"Não classifico por auto-avaliação — classifico por commit, hook, workflow rodando."</em><br>
+  <span style="color:#555;">Critério: Maturidade de HARNESS (processo, workflow, gates, ceremonies) — não capacidade de codificação</span><br>
+  <span style="color:#555;">v3.1 — 29/Abr/2026 · FB-AIOS-014 Wave 0-2: hook fix, 2 CronCreate, injection 12 patterns, canary 3 tokens, budget per-agent</span><br>
+  <span style="color:#555;">v3 — 29/Abr/2026 · Scout Audit: GSD Context 4.75→4.25 (feature≠N5), Cursor Safety 3.75→3.50 (CVEs), BMAD Context 3.75→3.25 (token bloat)</span><br>
+  <span style="color:#333;">v2 — 24/Abr/2026 · Delta: GStack ↑13, Hermes ↑11, Codex CLI ↑5, Ruflo ↓14, Cursor ↓7, Copilot ↓7</span>
+</p>
+
+<script>
+const THEMES = ['Context Engineering','Memory & Knowledge','Agent Orchestration','Automation & Scheduling','Quality Gates','MCP & Tools','Workflow Patterns','Session Continuity','Safety & Guardrails','Harness Engineering'];
+
+const DATA = {
+  aios: {name:'Synkra AIOS',scores:[4.75,4.75,4.5,4.25,5.0,4.5,4.75,4.5,4.50,4.25],evidence:['Synapse L0-L7 · context-tracker 4 states · 11 collectors · PRP pipeline · 5 CLAUDE.md · 9 rules','89 memory files · Entity Reg 508 · gotchas auto-capture · semantic search · hot-cache','14 agents · 19 squads · Master-Clone-Specialist · worktree isolation · tier system','13/13 events · 52 hooks · 3 GitHub Actions · hook chaining · auto-eval · 2 CronCreate (PR Triage + Stale Branch)','QA 2-stage 13 checks · QA Loop max 5 · CodeRabbit self-healing · DoD 2-layer · 13 vetos','Skill-tree 5 níveis · @devops governance · 2 plugins + 1 MCP · tool telemetry JSONL','9 workflows · 228 tasks · Framing v3 10-phase · SDC · ceremony automation · evolve','Semantic snapshot · session-lock PID · post-resume <24h · 50+ snapshots · 10 checkpoints','Authority BLOCK · 5 secret + 12 injection patterns · canary 3 tokens · budget per-agent 150K cap · recovery 5 strats','P→G→E · 197 generators · auto-eval 4 checks · 10 FB-AIOS features · 21 assessments']},
+  aiox: {name:'AIOX (aiox-core) v5.0.7',scores:[4.75,4.0,4.5,4.0,4.75,4.5,4.75,4.0,4.25,4.75],evidence:['Synapse 8-layer · Token budgets · Multi-IDE · 4 mutability layers','Agent MEMORY.md · Memory bridge · Gotchas · NO RAG','12 agents · Master orchestrator · Agent teams · Meta-Agent MVP v5','Rich hooks (Claude+Gemini+git) · 15+ GitHub Actions · Routines doc','3-layer system · CodeRabbit · IDS G1-G4 · 20+ checklists','9 MCP defs · 3-tier registry · Multi-LLM · PM adapters','13 workflows · 200+ tasks · SDC · Workflow intelligence','Session state YAML · Crash detection 30min · Resume options','Constitution 6 art. · 3 permission modes · 7 hook guardrails','Meta-framework · 80+ templates · Squad system · 6-IDE sync · Doctor']},
+  gstack: {name:'GStack v1.3',scores:[4.5,4.25,4.0,2.75,4.25,3.75,3.75,3.5,5.0,3.75],evidence:['CLAUDE.md central · 23 skills by sprint stage · /freeze dir lock · Cognitive modes','GBrain persistent git repo · /learn patterns · Design preferences memory cross-session','Conductor 10-15 parallel sprints · /pair-agent cross-browser · Scoped tokens','Checkpoint mode WIP commits · Smart skill suggestions · Sem cron/hooks','QA + /codex cross-model review · Schema drift detection · Design self-gate · OWASP/STRIDE','MCP server · Greptile · GStack Browser Chromium · Anti-bot stealth','Think→Plan→Build→Review→Test→Ship→Reflect · /ship · Sem formal ceremonies','Context save/restore markdown · GBrain sync · Checkpoint WIP · Sem crash recovery','ML classifier 94.8%/99.6% WASM · Canary tokens · Secret scan · Prompt injection defense telemetry','23 modular skills · Multi-agent (OpenClaw/Hermes/Codex) · MIT · /gstack-upgrade']},
+  hermes: {name:'Hermes v0.11',scores:[3.75,4.75,4.5,4.75,2.5,4.25,2.25,4.0,4.25,4.5],evidence:['SOUL.md + MEMORY.md + USER.md · Auxiliary model config · FTS5 session search','Best-in-class self-improving memory · Auto-creates skills · Pluggable providers · Honcho','delegate_task isolated · 3 concurrent subagents · max_spawn_depth · File-coordination layer','Built-in cron NL scheduling · Webhook direct-delivery · 17 platforms · Scheduled sessions','No structured QA gate · Feature request #406 · Self-improvement loop implicit','Native MCP stdio+HTTP · OAuth 2.1 PKCE · Malware scanning · 17 messaging platforms','Skills-based not workflow-based · No SDLC · Self-evolution DSPy + GEPA','SessionDB cross-request · FTS5 session search · Event streaming · Sem checkpoint','Dangerous command approval · Secret pattern scan · MCP OAuth · Docker sandbox all caps dropped','Pluggable provider arch · YAML+env config · Skills self-evolution · 6 backends · React/Ink TUI']},
+  codex: {name:'Codex CLI v0.118',scores:[4.25,4.0,4.25,3.25,3.0,4.5,3.25,3.5,4.75,4.0],evidence:['AGENTS.md + config.toml · /compact · Turn injection API · Config hierarchy','~/.codex/memories/ summaries + durable entries · Cross-session recall','Subagents path-based · Structured messaging · Agents SDK · Cloud worktrees','MCP server mode · Agents SDK pipelines · Codex App · Sem cron nativo','Guardian subagent approval · Approval policies · Sem QA gate formal','Native MCP STDIO + streaming HTTP · Parallel tool calls · codex mcp CLI · Marketplace','Agent Skills · Codex App long-running · Sem SDLC ceremonies','Auto-saved JSONL · /resume · /compact · Known websocket disconnects ~37min','Seatbelt sandbox macOS · deny-read globs · Network isolation · workspace-write modes','Open source Rust · config.toml · Skills · MCP server mode · 400+ contributors']},
+  gsd: {name:'GSD v2.68',scores:[4.25,3.5,4.25,3.25,2.5,4.0,3.75,4.5,3.5,4.5],evidence:['Phase-based fresh 200K/agent · One task per context · Clears between phases · SCOUT: feature not N5 sophistication','State as Markdown · SQLite+WAL · Raw JSONL dumps · Sem RAG/knowledge graph','Thin orchestrator pattern · Parallel researchers+executors · Multi-agent memory mgmt','Auto-mode dispatch · PID lock · Auto-advance milestones · Sem cron nativo','Spec-driven validation · Sem QA gates formais · Relies on spec compliance','Full workflow over MCP v2.68 · 20+ model providers · Extension API · Docker sandbox','Milestones→Slices→Tasks · Research→Planning→Execution · Sem SDLC ceremonies','Crash detection PID lock · Auto-recovery synthesized briefing · WAL sidecars · Event journals','DB/schema guardrails · Sandboxed execution · Docker · Redaction paths','True meta-framework TypeScript · Extension API · Layered config · Model fallbacks']},
+  devin: {name:'Devin 2.2',scores:[3.25,4.0,4.0,4.25,3.0,3.75,3.25,3.75,4.0,2.5],evidence:['Codebase indexing RAG · Session context VM · Sem user-facing token mgmt','Knowledge management CRUD · Learns patterns · Playbooks · Cross-session','Managed Devins parallel VMs · Parent/child sessions · Structured output schemas','Scheduled sessions recurring + one-time · API CI/CD · Slack + Linear triggers','Devin Review counter · GitHub Commit Status · PR-based · Sem QA ceremonies','MCP marketplace · OAuth auth · Shell+editor+browser sandbox · External API','Playbooks repeatable · Session→PR pipeline · Sem sprint/kanban/ceremony','PR Resuming cross-session · Parent/child persist · Streaming terminals · Pinned sessions','Cloud sandbox VM/session · Least-privilege · Branch protections · SOC2 · Zero-retention','Closed platform · Playbooks+Knowledge primitives · API extensível · Sem meta-framework']},
+  ecc: {name:'ECC v1.10',scores:[3.75,3.5,3.25,3.5,4.0,3.5,2.75,2.5,4.5,4.25],evidence:['Hook profiles (minimal/standard/strict) · PreCompact/PostCompact · Token-aware','Instinct-based learning PreToolUse/PostToolUse · Instincts→Skills /evolve · Memory persist','38 agents specialized · Agent definitions persona · Host-dependent parallel exec','8 hook event types · Runtime controls ECC_HOOK_PROFILE · Sem cron nativo','/quality-gate v1.8 · AgentShield 102 rules 1282 tests 98% coverage · 5-category scan','MCP config templates · MCP risk profiling AgentShield · Cross-platform 5 agents','48 agents dev lifecycle · /harness-audit · Research-first · Sem SDLC ceremonies','Hook-based session state · Instinct persistence · Sem crash recovery/checkpoint','AgentShield: secrets 14 patterns · Permission audit · Hook injection · Red/blue/auditor','Cross-platform harness · Extensible skills/agents/hooks · ECC 2.0 Rust alpha · 140k★']},
+  bmad: {name:'BMAD Method v6',scores:[3.25,2.25,4.5,2.5,4.75,3.75,5.0,2.5,2.25,4.25],evidence:['Rules per agent · YAML blueprints · Token problem: 67-86% context consumed · v6 lazy-load · SCOUT: consumption penalizes','No cross-session memory · Host-dependent · Quick-dev loads prior story context','12+ agent personas · Sub-agent compilation · Scale-Adaptive Intelligence · BMad Builder','No native hooks/cron · Host-dependent · v6 roadmap job queue (not shipped)','Solutioning gate 90% · Edge Case Hunter · TEA 9 test workflows · MCP enforces gates','MCP server IDE integration · BMad Builder toolkit · Supports Claude/Cursor/Codex/Pi','34+ workflows full SDLC · Discovery→Planning→Solutioning→Implementation · Scale-adaptive','Previous story continuity · Epic context cached · Host-dependent persist · Context overflow','Host-dependent sandboxing · No native permission system · Workflow gates prevent bad arch','BMad Builder visual/CLI · Expansion Packs · Agent-as-code versioned · npm distribution']},
+  windsurf: {name:'Windsurf 2.0',scores:[4.5,4.25,4.0,3.0,2.75,4.0,2.75,3.75,3.25,3.25],evidence:['Flow awareness real-time · Multi-layer pipeline · .windsurfrules · Auto context assembly','Persistent Memories cross-session · Learns after ~48hrs · Spaces carry context','Wave 13 multi-agent + worktree · Agent Command Center Kanban · Devin Cloud delegation','Cascade Hooks prompts/responses · Reusable Workflows · Sem cron · Workflows manual-only','Checkpoint reversion · 20-call cap · Rulebooks · Sem QA gate formal · Sem verdicts','Native MCP stdio/HTTP/SSE · Figma/Slack/Stripe · 5296 servers indexed · Closed ecosystem','Markdown workflow definitions · Slash command invocation · Spaces · Sem SDLC ceremonies','Named checkpoints · Git checkpoint branch · Memories persist · Flow awareness · Sem crash recovery','Cascade Hooks logging/blocking · 20-call cap · Rulebooks · FedRAMP High · Sem sandbox','Closed source · .windsurfrules config · MCP extension · Devin integration · Sem plugin API']},
+  cursor: {name:'Cursor 3.0',scores:[3.5,2.75,4.25,4.25,3.75,4.25,2.75,3.0,3.50,3.0],evidence:['.cursor/rules/ .mdc · Version-controlled · Re-sends full history · Sem token budget exposed','Agents search past chats · Chat history · Memory MCP (community) · Sem native cross-session','Parallel agents: local/worktree/cloud/SSH · /best-of-n · Background Agents cloud VMs','Automations: Slack/Linear/GitHub/PagerDuty triggers + cron · Hooks format/gate/checkpoint','BugBot ~80% fix · Learned Rules from PR · Automations as gates · Sem multi-phase QA','Full MCP · 5000+ servers · mcp.json · BugBot MCP · Sandbox MCP network controls','Agent-centric IDE · Worktree isolation · Sem SDLC ceremonies · User-defined automations','Background Agents persist cloud · Worktrees · Chat history · Sem crash recovery/checkpoint','OS-level sandboxing · Network 3 levels · Permission levels · Known CVEs (CurXecute/MCPoison) · SCOUT: CVEs penalize','Proprietary IDE · Rules/hooks/MCP extensible · Plugin ecosystem · Sem meta-framework']},
+  copilot: {name:'GitHub Copilot',scores:[3.75,4.0,3.0,3.5,3.25,4.5,3.0,2.75,3.75,3.25],evidence:['RAG GitHub code search · copilot-instructions.md · .agent.md · Copilot Spaces','Cross-agent memory public preview · Learns repo patterns · Shared between agent types','Cloud agent + local agent mode · .agent.md custom · Sem multi-agent parallel','Cloud agent from issues · GitHub Actions native · CI/CD built-in · Sem cron agents','Copilot code review · Branch rulesets · PR+CI gates · Sem multi-phase QA','GitHub MCP + Playwright MCP + Azure MCP 230 tools · Copilot Spaces · Auto-approve','Issue-to-PR workflow · Agent skills · Sem composable workflows · Sem ceremonies','Session logs in PR · Cross-agent memory · Sem crash recovery · Restarts from scratch','Sandboxing OS-level VS Code · Cannot push default branch · Branch rulesets · Enterprise admin','agent.md + copilot-instructions.md · Agent skills · MCP extensible · GitHub-coupled']},
+  openhands: {name:'OpenHands v1.6',scores:[3.25,2.25,3.25,3.0,2.75,4.0,2.5,4.5,4.25,4.25],evidence:['AgentContext centralized · Skill objects · Context window mgmt · SDK-level not user-facing','No cross-session memory · Re-discovers codebase · MemU external · Event log replay','Multi-agent via SDK · Model-agnostic routing · Sem delegation hierarchy · Single-agent autopilot','RFC Automations webhooks (not shipped) · GitHub Actions · Message queue execution','SDK modularity · SWE-bench 77.6% · Vulnerability Fixer · Planning Mode beta · Sem QA gate','First-class MCP OAuth · Built-in Bash/file/browser · Custom tool registration SDK','Planning Mode beta · Agentic loop · SDLC integration docs · Sem workflows/ceremonies','Event-sourced: immutable log · Full state replay on restart · Incremental persist · Best crash recovery','Docker sandbox · Secret Registry · Security confirmation · K8s RBAC v1.6 · Vulnerability Fixer','9-component SDK · Composable/extensible (MLSys paper) · Custom tools/agents · 490+ contributors']},
+  gemini: {name:'Gemini CLI v0.26+',scores:[4.25,4.0,3.0,3.75,2.25,4.0,2.5,3.25,3.25,3.75],evidence:['GEMINI.md context files · Context compression service · Chapter-based narrative · AGENT.md','save_memory tool · /memory commands · Auto Memory mines sessions→skills · /chat save/resume','Agent mode multi-step · Conductor extension · Generalist agent routing · Sem delegation','Hooks BeforeTool/AfterTool · Event-driven scheduler v0.26 · Headless mode · GitHub Actions beta','Plan-before-execute · Git diff review · Sem QA gate formal · Sem verdict system','Full MCP server support · Built-in tools · RESTful API · MCP marketplace · Security hooks','Agent Skills auto-generated · Finish Changes · Outlines · Sem SDLC/ceremonies','/chat save/resume branching · Chapter-based persist · Context compression · Sem crash recovery','mcp-security-scan.sh hook · Plan approval · Feature branch · BeforeTool matchers · VPC','Agent Skills extensible · Hooks API matchers · .gemini/settings.json · skill-creator skill · 96k★']},
+  amazonq: {name:'Amazon Q / Kiro',scores:[3.5,2.5,4.0,3.75,3.75,3.75,2.75,2.5,4.0,3.25],evidence:['@workspace modifiers · Steering files · Auto-preserves per-directory history · Dynamic context hooks','Per-directory conversation history · /save /load · Steering files · Sem RAG/knowledge graph','CAO: Handoff/Assign/Send Message · Hierarchical supervision · Auto-routes specialists','Kiro Hooks: file save/PR/repo events · CAO Flows cron · Auto-run tests · CodePipeline','Code review agent · Security scan OWASP · Unit test gen · Doc gen · Per-action not ceremony','Native MCP · Jira/Figma via MCP · CAO supports multiple CLIs · AWS service integrations','Kiro specs→QA workflow · CAO patterns · Sem SDLC ceremonies · Enterprise patterns','Per-directory history · /save /load manual · Sem crash recovery · Kiro continuity uncertain','OWASP scanning · AWS IAM · Devfile sandboxing · Security scan+remediation · SOC2/HIPAA','CAO open-source framework · Kiro closed · Hooks+Flows extensible · AWS ecosystem lock-in']},
+  replit: {name:'Replit Agent 4',scores:[2.5,2.75,4.25,2.0,3.0,4.0,2.25,4.5,4.0,2.0],evidence:['Project context auto-inferred · Sem rules files · Context from codebase+conversation','Session stitching consecutive · Project state in workspace · Sem RAG/knowledge graph','Agent 4 parallel task forking · Auto-resolve conflicts ~90% · Security Agent · Dependency analysis','No cron/scheduling · No hooks · Auto-deployment built-in · Platform CI/CD not configurable','Security Agent vuln scan · Parallel fix proposals · User review · Autonomous debugging 98%','Full MCP · MCP security scanner · Built-in DB/hosting/auth/storage/analytics/edge functions','Prompt→Plan→Build→Deploy implicit · Sem SDLC · Effort modes Economy/Power/Turbo','Snapshot engine instant forks+versioned DB · Session stitching · Isolated sandbox · Auto revert','Snapshot isolation · MCP security scanner · Security Agent · Relaxed guardrails in sandbox','Closed-source platform · Credit-based · MCP for third-party · Platform-locked']},
+  superpowers: {name:'Superpowers v5',scores:[3.5,2.0,4.0,1.5,4.25,3.25,4.25,2.25,2.0,3.75],evidence:['Master skill auto-loads · 14 skills · Host-dependent context · Subagent context gap #237','No native memory · Host-dependent entirely · Sem RAG · Session knowledge lost on restart','Subagent-driven dev · Safety stops · Model selection per subagent · Orchestrator reviews','No hooks/cron/triggers · Host-dependent · SessionStart hook injection only','TDD red-green-refactor · Mandatory code review · 7-phase verify · YAGNI/DRY · Systematic debug','MCP server cross-IDE · Marketplace 20+ skills · Sem tool ecosystem · Host for actual tools','7-phase: Brainstorm→Spec→Plan→TDD→Dev→Review→Finalize · Enforced discipline · Single workflow','Subagent isolation limits contamination · Checkpoint pauses · Sem crash recovery · Sem save/restore','YAGNI/DRY constraints · TDD prevents untested · Subagent blast radius · Sem sandbox/permissions','14 skills composable · Marketplace · Multi-platform 5 IDEs · MCP server · MIT · Sem meta-framework']},
+  aider: {name:'Aider v0.86+',scores:[3.5,1.75,1.75,2.75,2.75,3.0,2.25,2.25,2.0,3.5],evidence:['Tree-sitter repo map PageRank · 100+ langs · .aider.conf.yml · Architect mode','Chat history within session · Sem cross-session · Git history as implicit memory','Single agent · Architect+editor dual mode · Sem multi-agent/delegation/parallel','HTTP hooks Feb 2026 · Linter/formatter auto-run · Git-native auto-commit · Sem cron','Linter integration · Test runner · Human-in-loop · Agentic TDD · Sem verdict system','MCP extensibility · 100+ models via litellm · Tree-sitter parsing · Sem browser','Git-native: edit=commit, session=branch · Architect+editor · Sem SDLC/ceremonies','Chat history intra-session · /undo · Git revert · Sem session state · Zero memory','Human-in-loop · Git revert safety · Sem sandbox · Sem prompt injection defense','Highly configurable .aider.conf.yml · 100+ models · Apache 2.0 · 13K+ commits · Hooks+MCP']},
+  sweagent: {name:'SWE-agent / mini v2',scores:[2.75,1.25,1.5,2.0,2.0,2.5,1.75,1.0,3.0,3.0],evidence:['Single YAML config · ACI design · Sem CLAUDE.md · Context per-issue only','No cross-session memory · Stateless · Training trajectories offline only','Single agent · mini-swe-agent 100 lines · Sem multi-agent/subagent','Batch processing benchmarks · GitHub issue trigger · Sem hooks/cron','SWE-bench eval formal · Sem in-process QA gates · Pass/fail issue resolution only','Bash primary · File editor · GitHub MCP reported · ACI tool interface','Issue→Fix→PR single workflow · Sem SDLC/ceremonies · Pure issue resolution','No session persistence · Stateless by design · Each run independent · Sem checkpoints','Docker/container isolation · Bubblewrap sandbox · EnIGMA security · Sem prompt injection defense','YAML config hackable · Plugin system · Academic-oriented · MIT · Extensible ACI']},
+  bolt: {name:'Bolt.new V2',scores:[1.75,1.25,1.25,1.5,1.75,3.25,2.0,1.5,2.5,2.5],evidence:['No rules files · Context from conversation+code · Sem context pipeline','No cross-session memory · Project state WebContainer only · Sem persistent learning','Single Claude agent · Sem multi-agent/delegation/subagents','No hooks/cron/scheduling · Auto-deployment Bolt Cloud · Sem CI/CD','Plan mode review · Sem QA formal · Autonomous error recovery · User visual review','MCP server support · WebContainer Node.js · npm · Terminal · Prettier+ESLint','Prompt→Plan→Build→Deploy linear · Sem SDLC/ceremonies · Scaffolding focus','WebContainer state during session · URL sharing · Sem crash recovery/checkpoints','WebContainer sandboxing browser-isolated · Sem destructive blocking · Sem prompt defense','Open-source MIT · WebContainer API · Framework support · Model selection · Limited config']},
+  ruflo: {name:'Ruflo ⚠ AUDITADO',scores:[1.5,2.25,3.0,1.75,1.25,1.5,2.0,2.5,0.75,1.75],evidence:['Claims token savings · AUDIT: ADDS 15K-25K tokens noise via 290+ stub MCP tools','HNSW memory ~10 real tools · Hive-Mind resume broken (issue #900)','60+ agents · SONA routing · Hierarchical+mesh swarm · BUT: 63+ zombie processes (#1121)','No native cron/scheduling · Event-driven messaging · Host-dependent','No formal QA gates/verdicts/review · Relies on agent testing','AUDIT: 290/314 MCP tools are JSON stubs NO execution backend · ~10 real tools','Agent swarm coordination · Sem SDLC/sprint/kanban · Workflow = agent routing','--continue/--resume · Background persist · Checkpoint bugs (#621)','CRITICAL: Obfuscated preinstall deleted dirs (v3.1-3.5.2) · Prompt injection in tool descriptions · ~1800 any types · Non-blocking CI','Presents as orchestration platform · SDK Rust/Node/Python · 99% tools theater per audit']}
+};
+
+function showDetail(id) {
+  const d = DATA[id];
+  if (!d) return;
+  const panel = document.getElementById('detail-panel');
+  document.getElementById('detail-title').textContent = d.name + ' — Scores por Tema';
+  const grid = document.getElementById('detail-grid');
+  grid.innerHTML = '';
+  const mean = (d.scores.reduce((a,b)=>a+b,0)/10).toFixed(2);
+  d.scores.forEach((s, i) => {
+    const cls = s >= 4.5 ? 's5' : s >= 4.0 ? 's4' : s >= 3.0 ? 's3' : s >= 2.0 ? 's2' : 's1';
+    const bcls = s >= 4.5 ? 'b5' : s >= 4.0 ? 'b4' : s >= 3.0 ? 'b3' : s >= 2.0 ? 'b2' : 'b1';
+    const row = document.createElement('div');
+    row.className = 'detail-row';
+    row.innerHTML = `<span class="theme-name">${THEMES[i]}</span><span class="theme-score ${cls}">${s.toFixed(1)}</span><div class="theme-bar"><div class="theme-bar-fill ${bcls}" style="width:${s/5*100}%"></div></div>`;
+    row.title = d.evidence[i];
+    grid.appendChild(row);
+  });
+  const summary = document.createElement('div');
+  summary.style.cssText = 'grid-column:1/-1;text-align:center;margin-top:12px;font-size:.8rem;color:#888;';
+  summary.innerHTML = `<strong style="color:#4ade80;font-size:1rem;">${mean}</strong> média · Passe o mouse sobre cada tema para ver evidências`;
+  grid.appendChild(summary);
+  panel.className = 'visible';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function hideDetail() {
+  document.getElementById('detail-panel').className = '';
+}
+</script></body></html>

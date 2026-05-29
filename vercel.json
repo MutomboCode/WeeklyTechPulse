@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/magic-quadrant", "destination": "/magic-quadrant.html" },
+    { "source": "/workflow-cheatsheets", "destination": "/workflow-cheatsheets.html" },
+    { "source": "/aws-ml-updates", "destination": "/aws-ml-updates.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}
